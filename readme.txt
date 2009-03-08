@@ -14,7 +14,7 @@ Invite friends on buddypress social network from MSN, gmail, Yahoo, facebook and
 Invite friends on buddypress social network from MSN, gmail, Yahoo, facebook and twitter.
 You can invite friends from BuddyPress Bar : MyAccount/Friends/Invite Friends.
 
-It works with [wordpressMU](http://mu.wordpress.org/) + [BuddyPress] (http://www.buddypress.org)
+It works under [wordpressMU](http://mu.wordpress.org/) + [BuddyPress] (http://www.buddypress.org)
 
 
 ####History

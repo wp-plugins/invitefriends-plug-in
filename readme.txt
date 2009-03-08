@@ -35,11 +35,12 @@ If you have troubles with my plugin, need more details, or have suggestions - pl
 
 == Installation ==
 Unzip files in /wp-content/mu-plugins.
-	From admin page: Setting/Invite Friends
+####From admin page: 
+	Setting/Invite Friends
 	Set a mail address from will be send a mail to invite friends.[Default: mail admin].
 	Set type methods for all services. You can use API or scraper. If you not change it than it can not avaiable.
 	
-Warning:
+####Warning:
 	If use Yahoo API click on "GET AN APP ID" to get an application ID.(SET all fild and select "Browser Based Authentication")
 	If use gMail API set ZEND URL. Ensure that all services are TESTED with "No errors found".	 
   				

@@ -19,7 +19,7 @@ You can invite friends from BuddyPress Bar : MyAccount/Friends/Invite Friends.
 ####History
 
 0.1 - first release for beta version of BuddyPress.  
-0.2 - first release for RC1 version of BuddyPress.  
+0.3 - first release for RC1 version of BuddyPress.  
 
 ####Localization
 

@@ -2,8 +2,8 @@
 Author: Giovanni Caputo (email: giovannicaputo86@gmail.com) http://www.giovannicaputo.netsons.org
 Donate link: http://rat86.netsons.org/blog/?page_id=2015
 Tags: invite, buddypress, messenger, yahoo, friends, gMail, API, 
-Requires at least: RC1
-Tested up to: RC1
+Requires at least: BuddyPress RC1
+Tested up to: BuddyPress RC1
 Stable tag: 0.3.9a
 
 

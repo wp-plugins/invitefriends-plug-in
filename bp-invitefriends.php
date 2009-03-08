@@ -2,7 +2,7 @@
 # /* 
 # Plugin Name: Invite Friends
 # Plugin URI: 
-# Description: Invite friends on buddypress social network from MSN, gmail, facebokk and twitter. It can easily be added to a page using the code [invitefriends]. 
+# Description: Invite friends on buddypress social network from MSN, gmail, facebokk and twitter. 
 # Version: 0.3.9a
 # Author: Giovanni Caputo
 # Author URI: 

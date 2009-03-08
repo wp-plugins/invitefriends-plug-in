@@ -1,5 +1,5 @@
 === Invite Friends ===
-Contributors: Giovanni Caputo (email: giovannicaputo86@gmail.com) http://www.giovannicaputo.netsons.org
+Author: Giovanni Caputo (email: giovannicaputo86@gmail.com) http://www.giovannicaputo.netsons.org
 Donate link: http://rat86.netsons.org/blog/?page_id=2015
 Tags: invite, buddypress, messenger, yahoo, friends
 Requires at least: RC1

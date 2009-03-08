@@ -11,7 +11,7 @@ Invite friends on buddypress social network from MSN, gmail, Yahoo, facebook and
 
 == Description ==
 
-Invite friends on buddypress social network from MSN, gmail, Yahoo, facebook and twitter.
+Invite friends on **buddypress** social network from MSN, gmail, Yahoo, facebook and twitter.
 You can invite friends from BuddyPress Bar : MyAccount/Friends/Invite Friends.
 
 It works under [wordpressMU](http://mu.wordpress.org/) + [BuddyPress](http://www.buddypress.org) .
@@ -24,7 +24,7 @@ It works under [wordpressMU](http://mu.wordpress.org/) + [BuddyPress](http://www
 
 ####Localization
 
-	In English but you can translate language file .mo
+	In English but you can translate language file .po
 
 ####Please!
 If you don't rate my plugin as 5/5 - please write why - and I will change plugin, add options and fix bugs. It's very unpleasant to see silient low rates.  
@@ -39,7 +39,7 @@ Unzip files in /wp-content/mu-plugins.
 	Set a mail address from will be send a mail to invite friends.[Default: mail admin].
 	Set type methods for all services. You can use API or scraper. If you not change it than it can not avaiable.
 	
-Make attention:
+Warning:
 	If use Yahoo API click on "GET AN APP ID" to get an application ID.(SET all fild and select "Browser Based Authentication")
 	If use gMail API set ZEND URL. Ensure that all services are TESTED with "No errors found".	 
   				

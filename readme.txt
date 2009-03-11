@@ -20,7 +20,8 @@ It works under [wordpressMU](http://mu.wordpress.org/) + [BuddyPress](http://www
 ####History
 
 0.1 - first release for beta version of BuddyPress.  
-0.3 - first release for RC1 version of BuddyPress.  
+0.3 - first release for RC1 version of BuddyPress. 
+0.5 - Rc1 release with import rom Facebook and Twitter 
 
 ####Localization
 

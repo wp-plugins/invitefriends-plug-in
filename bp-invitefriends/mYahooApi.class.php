@@ -3,7 +3,6 @@
 /*Yahoo API
 */
 
-
 class connectToYahooApi{
    var $authObj;
    var $APPID;
@@ -41,14 +40,10 @@ function CreateLink() {
 	
 }
 
-
 function seeYahooContact(){
 // Validate the sig
    $authObj=$this->authObj;
-	if ($authObj->validate_sig()) {
-		
-		
-		
+	if ($authObj->validate_sig()) {		
     $path="http://address.yahooapis.com/api/ws/v1/searchContacts?format=xml&fields=email&email.present=1";
 	$xmlstr=$authObj->makeAuthWSgetCall($path);
 	/*formato
@@ -67,27 +62,20 @@ function seeYahooContact(){
 	
 //	print htmlentities($xmlstr);
 
-
-
-     	
-	require_once("lib/parser_php4.phps"); 
-	
+	require_once("lib/parser_php4.phps"); 	
 	$xml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?> <!DOCTYPE search-response SYSTEM "http://l.yimg.com/us.yimg.com/lib/pim/r/abook/xml/2/pheasant.dtd"><search-response><contact cid="2"><email fid="7">babby@pippo.it</email><email work="true" fid="8">giovannicaputo86@gmail.com</email></contact><contact cid="1"><email fid="3">caputo.nicola@libero.it</email><email work="true" fid="4">prova@alice.it</email></contact></search-response><!-- web214.address.pim.mud.yahoo.com uncompressed/chunked Sun Jan 4 06:40:33 PST 2009 -->';
 	$parser = new XMLParser($xmlstr);
 
 	//Work the magic...
 	$parser->Parse();
-	
 	$x=Array();
 	$cont=0;
-	
 	foreach($parser->document->contact as $c)
 	{
 		//echo $c->mail[0]->tagData. "<br>*";
 		//echo $c->tagData;
 		//echo $c->tagAttrs['cid'];
 		//echo $c->tagAttrs['fid'];
-		
 		  foreach ($c->email as $m){
 		   //echo $m->tagData;
 		   //echo $m->tagAttrs['fid'];
@@ -102,38 +90,16 @@ function seeYahooContact(){
 	
 	global $current_blog;
 	$urlpag=$current_blog->domain.$_SERVER['REQUEST_URI'];
-	
-	
-	
 	selectfriends($x);
-	
-	
-
-	
-
 	} else {
 		die('<h3>BBauth authentication Failed</h3> Possible error msg is in $sig_validation_error:<br />'. $authObj->sig_validation_error);
 	}
 
 
-
-
-
-
 }
 
 
 }
-
-
-
-
-
-
-
-
-
-
 
 
 ?>

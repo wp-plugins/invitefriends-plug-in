@@ -176,10 +176,26 @@ color:#446677 ;
 
 #invtFrinds{
  float: left;
- width: 500px
+ width: 500px;
 }
 
 #yahooAPI{
+	float: right;
+}
+
+#uploadFile{
+	float: right;
+	width: 250px;
+}
+
+#facebookDiv{
+	float: right;
+	width: 250px;
+	margin: 50px 40px 4px 4px;
+}
+
+
+#msnAPI{
 	float: right;
 }
 

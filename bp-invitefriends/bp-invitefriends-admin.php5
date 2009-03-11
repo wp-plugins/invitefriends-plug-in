@@ -1,4 +1,6 @@
 <?php
+
+
 /**
  * Zend Framework
  *
@@ -23,8 +25,7 @@
  * Simple class to verify that the server that this is run on has a correct
  * installation of the Zend Framework Gdata component.
  */
- 
-class InstallationChecker{
+class InstallationChecker {
 
     const CSS_WARNING = '.warning { color: #fff; background-color: #AF0007;}';
     const CSS_SUCCESS = '.success { color: #000; background-color: #69FF4F;}';
@@ -361,7 +362,6 @@ class InstallationChecker{
 			$html="<table class=\"verification_table\">" .
             "Ran PHP Installation Checker on " .
             gmdate('c') . "\n";
-
         $error_count = 0;
         foreach($this->_allErrors as $key => $value) {
             $html .= "<tr><td class=\"verification_type\">" . $key . "</td>";
@@ -393,12 +393,41 @@ class InstallationChecker{
 			add_options_page(__("Invite Friends Managment"), __("Invite Friends"), 8, basename(__FILE__), 'adminInvite_subpanel');
 		}
 	}
+	
+	
+	
+	function checkOption(){
+	if (!get_option("wp_InviteFriends")){
+	  echo "OPZIONI NON SETTATE";
+	   $new= array (
+				"mail"=>str_replace(" ", "", get_settings('admin_email')),
+				"yahooAPPID"=>str_replace(" ", "", ""),
+				"yahooSECRET"=>str_replace(" ", "", ""),
+				"YahooMod"=>str_replace(" ", "", "API"),
+				"GMailMod"=>str_replace(" ", "", "API"),
+				"ZendUrl"=>str_replace(" ", "", WP_CONTENT_DIR ."/mu-plugins/bp-invitefriends/lib/Gmail/library"),	
+				"HotmailMod"=>str_replace(" ", "", "cURL"),
+				"aolMod"=>str_replace(" ", "", "API"),	
+				"uploadFile"=>str_replace(" ", "","wp-content/mu-plugins/bp-invitefriends/upload"),
+				"facebookApiKey"=>str_replace(" ", "", $_POST['facebookApiKey']),
+				"facebookSECRET"=>str_replace(" ", "", $_POST['facebookSECRET']),
+				"facebookAppName"=>str_replace(" ", "", $_POST['facebookAppName']),
+				"facebookAppURL"=>str_replace(" ", "", $_POST['facebookAppURL']),
+				"facebookRedURL"=>str_replace(" ", "", $_POST['facebookRedURL']),
+				"msnAPPID"=>str_replace(" ", "", $_POST['msnAPPID']),
+				"msnSECRET"=>str_replace(" ", "", $_POST['msnSECRET'])
+		     );
+			add_option("wp_InviteFriends",$new);
+	
+	}else {}
+
+}
 
 	function adminInvite_subpanel(){
+	    checkOption();
+	     
 		if($_POST["editInvite"]){
 			$wp_rp_saved = get_option("wp_InviteFriends");
-			// echo  $wp_rp_saved['mail'];
-			//echo "RICEVUTO:" .$_POST["mail"];   
 			$new= array (
 				"mail"=>str_replace(" ", "", $_POST['mailFROM']),
 				"yahooAPPID"=>str_replace(" ", "", $_POST['yahooAPPID']),
@@ -407,12 +436,22 @@ class InstallationChecker{
 				"GMailMod"=>str_replace(" ", "", $_POST['GMailMod']),
 				"ZendUrl"=>str_replace(" ", "", $_POST['ZendUrl']),	
 				"HotmailMod"=>str_replace(" ", "", $_POST['HotmailMod']),
-				"aolMod"=>str_replace(" ", "", $_POST['aolMod'])	
-
+				"aolMod"=>str_replace(" ", "", $_POST['aolMod']),	
+				"uploadFile"=>str_replace(" ", "", $_POST['uploadFile']),
+				"facebookApiKey"=>str_replace(" ", "", $_POST['facebookApiKey']),
+				"facebookSECRET"=>str_replace(" ", "", $_POST['facebookSECRET']),
+				"facebookAppName"=>str_replace(" ", "", $_POST['facebookAppName']),
+				"facebookAppURL"=>str_replace(" ", "", $_POST['facebookAppURL']),
+				"facebookRedURL"=>str_replace(" ", "", $_POST['facebookRedURL']),
+				"msnAPPID"=>str_replace(" ", "", $_POST['msnAPPID']),
+				"msnSECRET"=>str_replace(" ", "", $_POST['msnSECRET'])
+				
+				
+				
+				
 		     );
 			update_option("wp_InviteFriends",$new);
 			echo __("<h3>DATA SAVED</h3>");
-			//var_dump($new);
 			
 		}
 		$salvati=get_option("wp_InviteFriends");
@@ -442,16 +481,16 @@ class InstallationChecker{
 			   <tr>
 			      <td><h3>Hotmail</h3></td>
 				  <td></td>
-				  <td></td>
-				 
-				  
-			    </tr>
-				 <tr>
+			   </tr>
+			    <tr>
 			     <td><input onclick="methodSelected(this);" type="radio" name="HotmailMod" value="API"   <?php if ($salvati['HotmailMod']=="API") echo "checked"?> > API</td>
-					<td><input onclick="methodSelected(this);" type="radio" name="HotmailMod" value="cURL"<?php if ($salvati['HotmailMod']!="API") echo "checked"?>>cURL</td>
+				 <td><input onclick="methodSelected(this);" type="radio" name="HotmailMod" value="cURL"<?php if ($salvati['HotmailMod']!="API") echo "checked"?>>Scraper</td>
+				 <td></td>
+				</tr>
+				<tr>
+				<td>APPID<input  class="txtMedio" type="text" id="msnAPPID" name="msnAPPID" value="<?php echo $salvati['msnAPPID']; ?>"   <?php if ($salvati['msnMod']=="cURL") echo "disabled"?> /></td>
+				  <td>SECRET <input class="txtMedio" type="text" id="msnSECRET" name="msnSECRET" value="<?php echo $salvati['msnSECRET']; ?>" <?php if ($salvati['msnMod']=="cURL") echo "disabled"?> /></td>
 				  <td></td>
-				  <td></td>
-				  
 				  
 			    </tr>
 			</table>
@@ -472,7 +511,7 @@ class InstallationChecker{
 				
 				 <tr>
 			     <td><input onclick="methodSelected(this);"  type="radio" name="YahooMod" value="API" <?php if ($salvati['YahooMod']!="cURL") echo "checked"?> > API</td>
-					<td><input onclick="methodSelected(this);"  type="radio" name="YahooMod" value="cURL"<?php if ($salvati['YahooMod']=="cURL") echo "checked"?>>cURL</td>
+					<td><input onclick="methodSelected(this);"  type="radio" name="YahooMod" value="cURL"<?php if ($salvati['YahooMod']=="cURL") echo "checked"?>>Scraper</td>
 				  <td></td>
 				  <td></td>
 				  
@@ -499,47 +538,90 @@ class InstallationChecker{
 			    </tr>
 				 <tr>
 			     <td><input onclick="methodSelected(this);" type="radio" name="GMailMod" value="API" <?php if ($salvati['GMailMod']!="cURL") echo "checked"?> > API</td>
-					<td><input onclick="methodSelected(this);" type="radio" name="GMailMod" value="cURL"<?php if ($salvati['GMailMod']=="cURL") echo "checked"?>>cURL</td>
+					<td><input onclick="methodSelected(this);" type="radio" name="GMailMod" value="cURL"<?php if ($salvati['GMailMod']=="cURL") echo "checked"?> disabled >Scraper</td>
 				  <td></td>
 				  <td>
 				
 				</td></tr>
 				</table>
                 <table>				
-					<tr> <td>Zend URL</td></tr>
+					<tr> <td><b>Zend URL</b></td></tr>
 					<tr><td>  <?php 
 						$oldPath = set_include_path(get_include_path().PATH_SEPARATOR.$salvati['ZendUrl']);
-						echo _("The path to your web accessable folder is: /home/USERID/public_html/. 
+						echo __("The path to your web accessable folder is: /home/USERID/public_html/. 
 						Where USERID is your account name (usually the first seven characters of your domain name).
-						<br>Propone: ").$_SERVER['DOCUMENT_ROOT']."/wp-content/mu-plugins/bp-invitefriends/lib/Gmail/library";
+						<br>Propone: "); 
+						echo WP_CONTENT_DIR ."/mu-plugins/bp-invitefriends/lib/Gmail/library";
 						?>
-					</td></tr>
+						</td></tr>
 					<tr><td><input class="txtLungo" type="text" id="ZendUrl" name="ZendUrl" value="<?php echo $salvati['ZendUrl']; ?>" <?php if ($salvati['GMailMod']=="cURL") echo "disabled"?>/></td></tr>
 				</table>
 			<?php $installationChecker = new InstallationChecker();   ?>
-			
-			
 			<br>
 			<table>
 			   <tr>
 			      <td><h3>AOL</h3></td>
 				  <td></td>
 				  <td></td>
-				 
-				  
 			    </tr>
 				 <tr>
-			     <td><input onclick="methodSelected(this);" type="radio" name="aolMod" value="API" <?php if ($salvati['aolMod']=="API") echo "checked"?> > API</td>
-					<td><input  onclick="methodSelected(this);"  type="radio" name="aolMod" value="cURL"<?php if ($salvati['aolMod']!="API") echo "checked"?>>cURL</td>
+			     <td><input onclick="methodSelected(this);" type="radio" name="aolMod" value="API" <?php if ($salvati['aolMod']=="API") echo "checked"?> disabled > API</td>
+					<td><input  onclick="methodSelected(this);"  type="radio" name="aolMod" value="cURL"<?php if ($salvati['aolMod']!="API") echo "checked"?>>Scraper</td>
 				  <td></td>
 				  <td></td>
-				  
-				  
+			    </tr>
+			</table>
+			
+			<table>
+			   <tr>
+			      <td><h3> CSV </h3></td>
+				  <td></td>
+			    </tr>
+				 <tr>
+			     <td></td>
+					<td><?php echo WP_CONTENT_DIR ; ?>/<input class="txtLungo" type="text" name="uploadFile" value="<?php echo $salvati['uploadFile']; ?>"/></td>
 			    </tr>
 			</table>
 			
 			
+			<table>
+			   <tr>
+			      <td><h3> Facebook </h3></td>
+				  <td><a href="http://www.facebook.com/developers/">Create your Facebook Application</a></td>
+			    </tr>
+				<tr><td><?php _e("Ensure that the Canvas Page URL and<br> that your Side Nav URL are both in lowercase!");?> </td><td></td></tr>
+				<tr>
+					<td>Use <br>FBML/iframe: FBML <br>
+							Developer Mode:    Disabled <br>
+							Application Type:  Website<br>
+							Private Install:    No</td>
+					<td></td>
+				</tr>
+				 <tr>
+			        <td>API Key</td><td><input  class="txtMedio" type="text" id="facebookApiKey" name="facebookApiKey" value="<?php echo $salvati['facebookApiKey']; ?>"  /></td>
+				  
+			    </tr>
+				<tr>
+				<td>SECRET </td><td><input class="txtMedio" type="text" id="facebookSECRET" name="facebookSECRET" value="<?php echo $salvati['facebookSECRET']; ?>"  /></td>
+				</tr>
+				
+				
+				<tr>
+					<td>Application Name</td><td><input class="txtMedio" type="text" id="facebookAppName" name="facebookAppName" value="<?php echo $salvati['facebookAppName']; ?>" /></td>
+					
+				</tr>
+				<tr>
+					<td>Application URL</td>
+					<td>http://apps.facebook.com/<input class="txtMedio" type="text" id="facebookAppURL" name="facebookAppURL" value="<?php echo $salvati['facebookAppURL']; ?>" /></td>
+				</tr>
+				<tr>
+					<td>Redirect URL </td><td><input class="txtMedio" type="text" id="facebookRedURL" name="facebookRedURL" value="<?php echo $salvati['facebookRedURL']; ?>" /></td>
+					
+				</tr>
+			</table>
 			
+			
+
 			<input type="hidden" name="action" value="update" />
 			<input type="hidden" name="editInvite" value="ok" />
 			<p class="submit">
@@ -553,10 +635,6 @@ class InstallationChecker{
 <?php 
 
 }
-
-
-
-
 
 
 function admin_invitefriends_header() {
@@ -607,7 +685,15 @@ function admin_invitefriends_header() {
 							
 						}
 					 break; 
-
+					case "HotmailMod":
+					     if (rad.value=="API"){
+							document.getElementById('msnAPPID').disabled=false;
+							document.getElementById('msnSECRET').disabled=false;
+						}else{	
+							document.getElementById('msnAPPID').disabled=true;
+							document.getElementById('msnSECRET').disabled=true;
+						}
+					   break;
 					default:
 				
 				}

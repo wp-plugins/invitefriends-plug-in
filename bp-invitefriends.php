@@ -31,7 +31,7 @@
 
 require_once( 'bp-core.php' );
 
-define ( 'BP_INVITE_FRIENDS', '0.8.2a' );
+define ( 'BP_INVITE_FRIENDS', '0.5.1' );
 
 include_once( 'bp-invitefriends/bp-invitefriends-admin.php5' );
 

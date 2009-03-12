@@ -3,7 +3,7 @@
 # Plugin Name: Invite Friends
 # Plugin URI: 
 # Description: Invite friends on buddypress social network from MSN, gmail, facebokk and twitter. It can easily be added to a page using the code [invitefriends] or from  BuddyPress Bar : MyAccount/Friends/Invite Friends
-# Version: 0.5.1
+# Version: 0.8.2a
 # Author: Giovanni Caputo
 # Author URI: http://www.giovannicaputo.netsons.org
 # */ 
@@ -31,7 +31,7 @@
 
 require_once( 'bp-core.php' );
 
-define ( 'BP_INVITE_FRIENDS', '0.5.1' );
+define ( 'BP_INVITE_FRIENDS', '0.8.2a' );
 
 include_once( 'bp-invitefriends/bp-invitefriends-admin.php5' );
 
@@ -198,7 +198,7 @@ function invitefriends_handler($atts, $content=null) {
 				$cont=0;
 				foreach ($entries->entry as $entry ) {
 					$defaults = $entry->children('http://schemas.google.com/g/2005');
-						$a = $defaults->email->attributes();
+						$a = (string) $defaults->email->attributes();
 					   $listMail[$cont++] = Array($a->address);				   
 				}
 				selectfriends($listMail);
@@ -527,6 +527,7 @@ function gestioneInvio(){
 
 
 function selectfriends($listMail, $otherInfo = null){
+   echo "select your friends";
 	global $current_user;
 	$iduser=$current_user->ID;	
 	$urlpag=$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
@@ -538,6 +539,7 @@ function selectfriends($listMail, $otherInfo = null){
 		     <input type="text" id="myfilter" onkeyup="filter()">
 		  </div>
 		  <form action="<?php echo  "http://".$urlpag."/";?>" method="post" accept-charset="UTF-8" onSubmit="return someSelected()">      
+		    <?php wp_nonce_field( 'friends_add_friend' ); ?>
 	        <div id="userlist" class="userlist" style="height:250px;">
 		     <span id="friends_list">
 			 <?php
@@ -549,7 +551,7 @@ function selectfriends($listMail, $otherInfo = null){
 				      <input id="<?php echo $cnt[0];?>"class="inputcheckbox"  name="mail[]" value="<?php echo $cnt[0];?>" type="checkbox" 
 					  <?php if ($type=='friends') echo "DISABLED";?>
 					  >
-					  <label for="<?php echo $cnt[0];?>" id="<?php echo $type?>"><?php if (isset($cnt[1])) echo $cnt[1];else echo $cnt[0];?></label><br>
+					  <label for="<?php echo $cnt[0];?>" id="<?php echo $type?>"><?php echo $cnt[0]; ?> </label><br>
 			    </span>
 				<?php
                }

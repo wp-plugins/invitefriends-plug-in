@@ -527,7 +527,6 @@ function gestioneInvio(){
 
 
 function selectfriends($listMail, $otherInfo = null){
-   echo "select your friends";
 	global $current_user;
 	$iduser=$current_user->ID;	
 	$urlpag=$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];

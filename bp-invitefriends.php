@@ -3,7 +3,7 @@
  Plugin Name: Invite Friends
  Plugin URI: 
  Description: Invite friends on buddypress social network from MSN, gmail, facebokk and twitter. It can easily be added to a page using the code [invitefriends] or from  BuddyPress Bar : MyAccount/Friends/Invite Friends
- Version: 0.5.3a
+ Version: 0.5.5a
  Author: Giovanni Caputo
  Author URI: http://www.giovannicaputo.netsons.org
 Site Wide Only: true
@@ -32,7 +32,7 @@ Site Wide Only: true
 
 require_once( 'bp-core.php' );
 
-define ( 'BP_INVITE_FRIENDS', '0.5.2a' );
+define ( 'BP_INVITE_FRIENDS', '0.5.5a' );
 
 include_once( 'bp-invitefriends/bp-invitefriends-admin.php5' );
 
@@ -234,9 +234,10 @@ function invitefriends_handler($atts, $content=null) {
 				$cont=0;
 				foreach ($entries->entry as $entry ) {
 					$defaults = $entry->children('http://schemas.google.com/g/2005');
-						$a = (string) $defaults->email->attributes();
+						$a = $defaults->email->attributes();
 					   $listMail[$cont++] = Array($a->address);				   
 				}
+			
 				selectfriends($listMail);
 			}
 			
@@ -657,7 +658,7 @@ function checkfacebook(){
 	                    type="<?php echo $app_name; ?>"
 						
 	                    content="
-							<?php echo "Iscriviti su <a href='".site_url() ."'>".site_url() ."</a> "; ?>
+							<?php echo __("Sign Up ")."<a href='".site_url() ."'>".site_url() ."</a> "; ?>
 	                 <fb:req-choice url='<?php $facebook->get_add_url();?>'
 	                       label='<?php echo "Become a Member!"; ?>' />
 	              "

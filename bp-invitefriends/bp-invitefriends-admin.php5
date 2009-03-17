@@ -483,7 +483,7 @@ class InstallationChecker {
 				  <td></td>
 			   </tr>
 			    <tr>
-			     <td><input onclick="methodSelected(this);" type="radio" name="HotmailMod" value="API"   <?php if ($salvati['HotmailMod']=="API") echo "checked"?> > API</td>
+			     <td><input onclick="methodSelected(this);" type="radio" name="HotmailMod" value="API"   <?php if ($salvati['HotmailMod']=="API") echo "checked"?> disabled> API</td>
 				 <td><input onclick="methodSelected(this);" type="radio" name="HotmailMod" value="cURL"<?php if ($salvati['HotmailMod']!="API") echo "checked"?>>Scraper</td>
 				 <td></td>
 				</tr>

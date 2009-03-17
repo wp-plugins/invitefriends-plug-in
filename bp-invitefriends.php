@@ -1,12 +1,13 @@
 <?php 
-# /* 
-# Plugin Name: Invite Friends
-# Plugin URI: 
-# Description: Invite friends on buddypress social network from MSN, gmail, facebokk and twitter. It can easily be added to a page using the code [invitefriends] or from  BuddyPress Bar : MyAccount/Friends/Invite Friends
-# Version: 0.5.2a
-# Author: Giovanni Caputo
-# Author URI: http://www.giovannicaputo.netsons.org
-# */ 
+/* 
+ Plugin Name: Invite Friends
+ Plugin URI: 
+ Description: Invite friends on buddypress social network from MSN, gmail, facebokk and twitter. It can easily be added to a page using the code [invitefriends] or from  BuddyPress Bar : MyAccount/Friends/Invite Friends
+ Version: 0.5.3a
+ Author: Giovanni Caputo
+ Author URI: http://www.giovannicaputo.netsons.org
+Site Wide Only: true
+ */ 
 
  /* Copyright 2008-2009 GIOVANNI CAPUTO (email: giovannicaputo86@gmail.com)
 
@@ -109,7 +110,7 @@ function invitefriends_handler($atts, $content=null) {
   <?php 
   gestioneInvio();
   if (is_user_logged_in()){
-     if (!isset ($_GET['appid']) && !isset ($_GET['wll'])){ // non YAHOO
+     if (!isset ($_GET['appid']) && !isset ($_GET['msn'])){ // non YAHOO
        if (isset($_POST['op'])){
 		switch ($_POST['op']){
 			case "webMail":
@@ -153,8 +154,43 @@ function invitefriends_handler($atts, $content=null) {
 			$Yahoo->CreateLink();
 			$Yahoo->seeYahooContact();
 		}
-		if (isset ($_GET['wll'])){
-			msnAPI();
+		if (isset ($_GET['msn'])){ //msnAPI
+			include ("bp-invitefriends/lib/msnAPI/msnAPIgestore.php");
+			include ("bp-invitefriends/lib/msnAPI/windowslivelogin.php");
+			if (!isset($_GET['gestore'])){
+				$gestore= new msnAPIgestore();
+				$wll= $gestore->init();
+				echo $gestore->getLink($wll);
+			}else{
+				// Specify true to log messages to Web server logs.
+				$DEBUG = false;
+				// Comma-delimited list of offers to be used.
+				$OFFERS = "Contacts.View";
+				// Application key file: store in an area that cannot be accessed from the Web.
+				$KEYFILE = 'http://www.rat86.netsons.org/bp/wp-content/mu-plugins/bp-invitefriends/lib/msnAPI/DelAuth-Sample1.xml';
+				// Name of cookie to use to cache the consent token. 
+				$COOKIE = 'delauthtoken';
+				$COOKIETTL = time() + (10 * 365 * 24 * 60 * 60);
+
+				// URL of Delegated Authentication sample index page.
+				$INDEX = 'index3.php';
+				// Default handler for Delegated Authentication.
+				$HANDLER = 'delauth-handler.php';
+				// Initialize the WindowsLiveLogin module.
+				$wll = WindowsLiveLogin::initFromXml($KEYFILE);
+				$wll->setDebug($DEBUG);
+				// Extract the 'action' parameter, if any, from the request.
+				$action = @$_REQUEST['action'];
+				if ($action == 'delauth') {
+					$consent = $wll->processConsent($_REQUEST);
+				// If a consent token is found, store it in the cookie that is   configured in the settings.php file and then redirect to  the main page.
+					if ($consent) {
+						setcookie($COOKIE, $consent->getToken(), $COOKIETTL);
+					}else {
+						setcookie($COOKIE);
+					}
+				}header("Location: $INDEX");
+			}
 		}
    }
   }else   _e("<p>You need to be logged TO INVITE FRIENDS</p>");  // NON LOGGATO
@@ -370,7 +406,7 @@ function init_form(){
 				<?php 
 					$urlpag=$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
 					if (strpos($urlpag, '?')!== FALSE ) 	$urlpag = substr($urlpag, 0, strpos($urlpag, '?')); 
-				    $urlpag="http://".$urlpag."?wll=true";
+				    $urlpag="http://".$urlpag."?msn=true";
 				     echo "<a href=\"". $urlpag. "\">";
 					 _e("Login to Windows Live Messenger");
 					 echo "</a>";
@@ -406,116 +442,6 @@ function init_form(){
 }
 
 
-
-function msnAPI(){
-	   // Specify true to log messages to Web server logs.
-					$DEBUG = false;
-					// Comma-delimited list of offers to be used.
-					$OFFERS = "Contacts.View";
-					// Application key file: store in an area that cannot be
-					// accessed from the Web.
-					$KEYFILE = '../DelAuth-Sample1.xml';
-					// Name of cookie to use to cache the consent token. 
-					$COOKIE = 'delauthtoken';
-					$COOKIETTL = time() + (10 * 365 * 24 * 60 * 60);
-					include_once( 'bp-invitefriends/lib/windowslivelogin.php' );
-					
-					// Initialize the WindowsLiveLogin module.
-					$wll = new WindowsLiveLogin("000000004400E576", "VC34hlWzVGHP1cFpSnBO6jhrPJsJ7yV6", "wsignin1.0", $x,  $policyurl, $returnurl);
-					$wll->setDebug($DEBUG);
-					$OFFERS = "Contacts.View";
-				
-				$COOKIETTL = time() + (10 * 365 * 24 * 60 * 60);
-
-				// URL of Delegated Authentication sample index page.
-					$INDEX = 'index.php';
-
-				// Default handler for Delegated Authentication.
-				//$HANDLER = 'delauth-handler.php';
-				$HANDLER = 'index.php';
-					
-					$consenturl = $wll->getConsentUrl($OFFERS);
-					
-					 echo "sono qui";
-					$message_html = "<p>Please <a href=\"$consenturl\">click here</a> to grant consent 
-                 for this application to access your Windows Live data.</p>";
-
-				$token = null;
-$cookie = @$_COOKIE[$COOKIE];
-
-if ($cookie) {
-    $token = $wll->processConsentToken($cookie);
-}
-
-if ($token && !$token->isValid()) {
-    $token = null;
-}
-
-if ($token) {
-    // Convert Unix epoch time stamp to user-friendly format.
-    $expiry = $token->getExpiry();
-    $expiry = date(DATE_RFC2822, $expiry);
-    // Prepare the message to display the consent token contents.
-    $message_html = <<<END
-    <p>Consent token found! The following are its contents.</p>
-
-    <table>
-    <tr><td>NUOVA Delegation token</td><td>{$token->getDelegationToken()}</td></tr>
-    <tr><td>Refresh token</td><td>{$token->getRefreshToken()}</td></tr>
-    <tr><td>Expiry</td><td>{$expiry}</td></tr>
-    <tr><td>Offers</td><td>{$token->getOffersString()}</td></tr>
-    <tr><td>Context</td><td>{$token->getContext()}</td></tr>
-    <tr><td>Token</td><td>{$token->getToken()}</td></tr>
-    </table>
-
-    <p>
-    Click <a href="{$HANDLER}?action=delauth">here</a> to remove the token
-    from your session.
-    </p>
-END;
-
- $delegation_token = $token->getDelegationToken();
-	$cid = $token->getLocationID();
-	
-	// convert the cid to a signed 64-bit integer
-	$lid = hexaTo64SignedDecimal($cid, 16, 10);
-	$uri = "https://livecontacts.services.live.com/users/@C@" . $lid . "/rest/livecontacts";
-	
-	$host = "livecontacts.services.live.com";
-	$urisplit = split("://", $uri);
-	$page = substr($urisplit[1], strlen($host));
-	
-	// Add the token to the header
-	$headers = array("Authorization: DelegatedToken dt=\"$delegation_token\"");
-	
-	$curl = curl_init();
-	curl_setopt($curl, CURLOPT_URL, $uri);
-	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($curl, CURLOPT_TIMEOUT, 60);
-	curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-	
-	$xml = curl_exec($curl);
-	echo htmlentities($xml);
- 
-
-  
-}
-					
-					
-					
-			  echo $message_html;		
-					
-					
-					
-					
-					
-					
-					
-					
-					
-
-}
 
 function gestioneInvio(){
 	include_once( 'bp-friends/bp-friends-classes.php' );

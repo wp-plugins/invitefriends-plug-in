@@ -3,7 +3,7 @@
  Plugin Name: Invite Friends
  Plugin URI: 
  Description: Invite friends on buddypress social network from MSN, gmail, facebokk and twitter. It can easily be added to a page using the code [invitefriends] or from  BuddyPress Bar : MyAccount/Friends/Invite Friends
- Version: 0.5.5a
+ Version: 0.5.6a
  Author: Giovanni Caputo
  Author URI: http://www.giovannicaputo.netsons.org
 Site Wide Only: true
@@ -32,7 +32,7 @@ Site Wide Only: true
 
 require_once( 'bp-core.php' );
 
-define ( 'BP_INVITE_FRIENDS', '0.5.5a' );
+define ( 'BP_INVITE_FRIENDS', '0.5.6a' );
 
 include_once( 'bp-invitefriends/bp-invitefriends-admin.php5' );
 
@@ -205,11 +205,17 @@ function invitefriends_handler($atts, $content=null) {
 	   switch ($scelta) {
 	   case "hotmail":
 	      if ($salvata['HotmailMod']=='cURL'){
-			include_once( 'bp-invitefriends/lib/msnm.class.php' );
-			   $msn2 = new msn;
-		      $listMail = $msn2->qGrab($usr, $pwd);
-			  selectfriends($listMail);
-			} else{
+			include_once( 'bp-invitefriends/lib/msnscraper/msnp9.class.php' );
+			$msn = new msn;
+			if ($msn->connect($usr, $pwd))	{
+				$msn->rx_data();
+				selectfriends($msn->getMailVector());
+			}else{
+				// wrong username and password?
+				echo '<p>Error Connecting to the MSN Network</p>';
+			}
+
+		} else{
 			   _e("Messenger API don't work");
 			}
 		    //print_r($returned_emails);			

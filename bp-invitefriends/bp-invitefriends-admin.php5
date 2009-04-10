@@ -415,7 +415,14 @@ class InstallationChecker {
 				"facebookAppURL"=>str_replace(" ", "", $_POST['facebookAppURL']),
 				"facebookRedURL"=>str_replace(" ", "", $_POST['facebookRedURL']),
 				"msnAPPID"=>str_replace(" ", "", $_POST['msnAPPID']),
-				"msnSECRET"=>str_replace(" ", "", $_POST['msnSECRET'])
+				"msnSECRET"=>str_replace(" ", "", $_POST['msnSECRET']),
+				"Hotmail"=>"on",
+				"Facebook"=>"on",
+				"Yahoo"=>"on",
+				"Gmail"=>"on",
+				"AOL"=>"on",
+				"CSV"=>"on",
+				"Twitter"=>"on"
 		     );
 			add_option("wp_InviteFriends",$new);
 	
@@ -444,189 +451,141 @@ class InstallationChecker {
 				"facebookAppURL"=>str_replace(" ", "", $_POST['facebookAppURL']),
 				"facebookRedURL"=>str_replace(" ", "", $_POST['facebookRedURL']),
 				"msnAPPID"=>str_replace(" ", "", $_POST['msnAPPID']),
-				"msnSECRET"=>str_replace(" ", "", $_POST['msnSECRET'])
-				
-				
-				
-				
+				"msnSECRET"=>str_replace(" ", "", $_POST['msnSECRET']),
+				"Hotmail"=>str_replace(" ", "", $_POST['Hotmail']),
+				"Facebook"=>str_replace(" ", "", $_POST['Facebook']),
+				"Yahoo"=>str_replace(" ", "", $_POST['Yahoo']),
+				"Gmail"=>str_replace(" ", "", $_POST['Gmail']),
+				"AOL"=>str_replace(" ", "", $_POST['AOL']),
+				"Twitter"=>str_replace(" ", "", $_POST['Twitter']),
+				"CSV"=>str_replace(" ", "", $_POST['CSV'])
+
 		     );
 			update_option("wp_InviteFriends",$new);
+			
+			
+			$string= "<windowslivelogin>
+  <appid>".$_POST['msnAPPID']."</appid>
+  <secret>".$_POST['msnSECRET']."</secret>
+  <securityalgorithm>wsignin1.0</securityalgorithm>
+  <returnurl>".site_url()."/wp-content/mu-plugins/bp-invitefriends/lib/msnAPI/delauth-handler.php</returnurl>
+  <policyurl>".site_url()."/wp-content/mu-plugins/bp-invitefriends/lib/msnAPI/policy.html</policyurl>
+</windowslivelogin>";
+		echo  "<br />";
+
+		$handle = fopen(WP_CONTENT_DIR."/mu-plugins/bp-invitefriends/lib/msnAPI/DelAuth-Sample1.xml", "w");
+		fwrite ($handle, $string);
+		fclose($handle);
+					
 			echo __("<h3>DATA SAVED</h3>");
 			
 		}
 		$salvati=get_option("wp_InviteFriends");
 	?>
 		<div class="wrap">
+		
 		<h2><?php echo __("Invite friends"); ?></h2>
 		<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>?page=<?php echo basename(__FILE__); ?>">
-			<table class="form-table">
-			  <tr valign="top">
-				<th scope="row"><?php echo __("Mail from:") ?></th>
-				<td><input class="txtMedio" type="text" name="mailFROM" value="<?php echo $salvati['mail']; ?>" /></td>
-				</tr>
-				<!-- 
-			  <tr valign="top">
-				<th scope="row">Some Other Option</th>
-				<td><input type="text" name="some_other_option" value="<?php  ?>" /></td>
-			  </tr>
+		<label for="mailFROM"><?php echo __("Mail from:") ?></label><input class="txtMedio" type="text" name="mailFROM" id="mailFROM" value="<?php echo $salvati['mail']; ?>" /><br /><br /><br />
+		
+			<div class="msg_list">
+			<ul id="ulmenu">
+			  <li  <?php if ( $salvati['Hotmail']=="on") $col="#99FF99";else $col="#FFCCCC"; echo "style=\"background-color:".$col.";\""?> ><input type="checkbox" name="Hotmail" <?php if ( $salvati['Hotmail']=="on") echo "CHECKED";?>></li><li <?php echo "style=\"background-color:".$col.";\""?>  class="msg_head"><u>Hotmail</u>
+			  </li>
+			  <li class="msg_body">
+				
+				<label for="HotmailMod1">API<input id="HotmailMod1"onclick="methodSelected(this);" type="radio" name="HotmailMod" value="API"   <?php if ($salvati['HotmailMod']=="API") echo "checked"?> > </label>  <br />  
+				<label for="HotmailMod2">Scraper<input id="HotmailMod2"onclick="methodSelected(this);" type="radio" name="HotmailMod" value="cURL"<?php if ($salvati['HotmailMod']!="API") echo "checked"?>> </label>  <br />  <br />    
+				  <a href="http://go.microsoft.com/fwlink/?LinkID=130560" target="_blank">Get your application ID</a>(Sign in by using your Windows Live ID)Live Services: Existing APIs.<br /><br />  
+				<label for="msnAPPID">APPID</label> <input  class="txtMedio" type="text" id="msnAPPID" name="msnAPPID" value="<?php echo $salvati['msnAPPID']; ?>"   <?php if ($salvati['msnMod']!="API") echo "disabled"?> /><br />
+				 <label for="msnSECRET">SECRET</label>   <input class="txtMedio" type="text" id="msnSECRET" name="msnSECRET" value="<?php echo $salvati['msnSECRET']; ?>" <?php if ($salvati['msnMod']!="API") echo "disabled"?> /><br />
+			  </li>
+			</ul>  		
+			<ul id="ulmenu">
+			  <li  <?php if ( $salvati['Yahoo']=="on") $col="#99FF99";else $col="#FFCCCC"; echo "style=\"background-color:".$col.";\""?> ><input type="checkbox" name="Yahoo" <?php if ( $salvati['Yahoo']=="on") echo "CHECKED";?>></li><li <?php echo "style=\"background-color:".$col.";\""?>  class="msg_head"><u>Yahoo</u>
+			  </li>
+			  <li class="msg_body">
+				    <label for="YahooMod1">API<input onclick="methodSelected(this);" id="YahooMod1" type="radio" name="YahooMod" value="API" <?php if ($salvati['YahooMod']!="cURL") echo "checked"?> ></label><br />
+					<label for="YahooMod2">Scraper<input onclick="methodSelected(this);" id="YahooMod2"type="radio" name="YahooMod" value="cURL"<?php if ($salvati['YahooMod']=="cURL") echo "checked"?>></label><br /><br />
+					<a href="https://developer.yahoo.com/wsregapp/" target="_blank">Get an App ID</a> <br />
+					<label for="yahooAPPID">APPID</label><input  class="txtMedio" type="text" id="yahooAPPID" name="yahooAPPID" value="<?php echo $salvati['yahooAPPID']; ?>"   <?php if ($salvati['YahooMod']=="cURL") echo "disabled"?> /><br />
+					
+					<label for="yahooAPPID">SECRET</label> <input class="txtMedio" type="text" id="yahooSECRET" name="yahooSECRET" value="<?php echo $salvati['yahooSECRET']; ?>" <?php if ($salvati['YahooMod']=="cURL") echo "disabled"?> /><br />
+			  </li>
+			</ul>  
+			
+			<ul id="ulmenu">
+			  <li  <?php if ( $salvati['Gmail']=="on") $col="#99FF99";else $col="#FFCCCC"; echo "style=\"background-color:".$col.";\""?> ><input type="checkbox" name="Gmail" <?php if ( $salvati['Gmail']=="on") echo "CHECKED";?>></li><li <?php echo "style=\"background-color:".$col.";\""?>  class="msg_head"><u>Gmail</u>
+			  </li>
+			  <li class="msg_body">
+					<label for="GMailMod1">API<input onclick="methodSelected(this);" type="radio" id="GMailMod1" name="GMailMod" value="API" <?php if ($salvati['GMailMod']!="cURL") echo "checked"?> ></label><br />
+					<label for="GMailMod2">Scraper<input onclick="methodSelected(this);" type="radio" name="GMailMod2" id="GMailMod" value="cURL"<?php if ($salvati['GMailMod']=="cURL") echo "checked"?> disabled ></label><br /><br />
+				     <b>Zend URL</b><br />
 
-			  <tr valign="top">
-				<th scope="row">Options, Etc.</th>
-				<td><input type="text" name="option_etc" value="<?php ?>" /></td>
-			  </tr>
-			  -->
-			</table>
-			
-			<table>
-			   <tr>
-			      <td><h3>Hotmail</h3></td>
-				  <td></td>
-			   </tr>
-			    <tr>
-			     <td><input onclick="methodSelected(this);" type="radio" name="HotmailMod" value="API"   <?php if ($salvati['HotmailMod']=="API") echo "checked"?> disabled> API</td>
-				 <td><input onclick="methodSelected(this);" type="radio" name="HotmailMod" value="cURL"<?php if ($salvati['HotmailMod']!="API") echo "checked"?>>Scraper</td>
-				 <td></td>
-				</tr>
-				<tr>
-				<td>APPID<input  class="txtMedio" type="text" id="msnAPPID" name="msnAPPID" value="<?php echo $salvati['msnAPPID']; ?>"   <?php if ($salvati['msnMod']=="cURL") echo "disabled"?> /></td>
-				  <td>SECRET <input class="txtMedio" type="text" id="msnSECRET" name="msnSECRET" value="<?php echo $salvati['msnSECRET']; ?>" <?php if ($salvati['msnMod']=="cURL") echo "disabled"?> /></td>
-				  <td></td>
-				  
-			    </tr>
-			</table>
-			
-			
-
-			<table>
-			   
-			   <tr>
-			      <td><h3>Yahoo</h3></td>
-				  <td><a href="https://developer.yahoo.com/wsregapp/" target="_blank">Get an App ID</a>
-						</td>
-				  <td></td>
-				  <td></td>
-				  
-				  
-			    </tr>
-				
-				 <tr>
-			     <td><input onclick="methodSelected(this);"  type="radio" name="YahooMod" value="API" <?php if ($salvati['YahooMod']!="cURL") echo "checked"?> > API</td>
-					<td><input onclick="methodSelected(this);"  type="radio" name="YahooMod" value="cURL"<?php if ($salvati['YahooMod']=="cURL") echo "checked"?>>Scraper</td>
-				  <td></td>
-				  <td></td>
-				  
-				  
-			    </tr>
-			   <tr>
-				  
-			      <td>APPID<input  class="txtMedio" type="text" id="yahooAPPID" name="yahooAPPID" value="<?php echo $salvati['yahooAPPID']; ?>"   <?php if ($salvati['YahooMod']=="cURL") echo "disabled"?> /></td>
-				  <td>SECRET <input class="txtMedio" type="text" id="yahooSECRET" name="yahooSECRET" value="<?php echo $salvati['yahooSECRET']; ?>" <?php if ($salvati['YahooMod']=="cURL") echo "disabled"?> /></td>
-				  <td></td>
-				  <td></td>
-				 
-				
-			    </tr>
-			</table>
-			
-			<table>
-			   <tr>
-			      <td><h3>Gmail</h3></td>
-				  <td></td>
-				  <td></td>
-				 
-				  
-			    </tr>
-				 <tr>
-			     <td><input onclick="methodSelected(this);" type="radio" name="GMailMod" value="API" <?php if ($salvati['GMailMod']!="cURL") echo "checked"?> > API</td>
-					<td><input onclick="methodSelected(this);" type="radio" name="GMailMod" value="cURL"<?php if ($salvati['GMailMod']=="cURL") echo "checked"?> disabled >Scraper</td>
-				  <td></td>
-				  <td>
-				
-				</td></tr>
-				</table>
-                <table>				
-					<tr> <td><b>Zend URL</b></td></tr>
-					<tr><td>  <?php 
-						$oldPath = set_include_path(get_include_path().PATH_SEPARATOR.$salvati['ZendUrl']);
+					 <?php $oldPath = set_include_path(get_include_path(). PATH_SEPARATOR. $salvati['ZendUrl']);
 						echo __("The path to your web accessable folder is: /home/USERID/public_html/. 
 						Where USERID is your account name (usually the first seven characters of your domain name).
-						<br>Propone: "); 
-						echo WP_CONTENT_DIR ."/mu-plugins/bp-invitefriends/lib/Gmail/library";
-						?>
-						</td></tr>
-					<tr><td><input class="txtLungo" type="text" id="ZendUrl" name="ZendUrl" value="<?php echo $salvati['ZendUrl']; ?>" <?php if ($salvati['GMailMod']=="cURL") echo "disabled"?>/></td></tr>
-				</table>
-			<?php $installationChecker = new InstallationChecker();   ?>
-			<br>
-			<table>
-			   <tr>
-			      <td><h3>AOL</h3></td>
-				  <td></td>
-				  <td></td>
-			    </tr>
-				 <tr>
-			     <td><input onclick="methodSelected(this);" type="radio" name="aolMod" value="API" <?php if ($salvati['aolMod']=="API") echo "checked"?> disabled > API</td>
-					<td><input  onclick="methodSelected(this);"  type="radio" name="aolMod" value="cURL"<?php if ($salvati['aolMod']!="API") echo "checked"?>>Scraper</td>
-				  <td></td>
-				  <td></td>
-			    </tr>
-			</table>
-			
-			<table>
-			   <tr>
-			      <td><h3> CSV </h3></td>
-				  <td></td>
-			    </tr>
-				 <tr>
-			     <td></td>
-					<td><?php echo WP_CONTENT_DIR ; ?>/<input class="txtLungo" type="text" name="uploadFile" value="<?php echo $salvati['uploadFile']; ?>"/></td>
-			    </tr>
-			</table>
+						<br /><b>Suggest: </b>"); 
+						echo WP_CONTENT_DIR ."/mu-plugins/bp-invitefriends/lib/Gmail/library";?>
+						<input class="txtLungo" type="text" id="ZendUrl" name="ZendUrl" value="<?php echo $salvati['ZendUrl']; ?>" <?php if ($salvati['GMailMod']=="cURL") echo "disabled"?>/><br /><br />
+						<b>Zend Installation Checker</b><br />
+						<?php $installationChecker = new InstallationChecker();   ?>
+				</li>
+			</ul>
 			
 			
-			<table>
-			   <tr>
-			      <td><h3> Facebook </h3></td>
-				  <td><a href="http://www.facebook.com/developers/">Create your Facebook Application</a></td>
-			    </tr>
-				<tr><td><?php _e("Ensure that the Canvas Page URL and<br> that your Side Nav URL are both in lowercase!");?> </td><td></td></tr>
-				<tr>
-					<td>Use <br>FBML/iframe: FBML <br>
-							Developer Mode:    Disabled <br>
-							Application Type:  Website<br>
-							Private Install:    No</td>
-					<td></td>
-				</tr>
-				 <tr>
-			        <td>API Key</td><td><input  class="txtMedio" type="text" id="facebookApiKey" name="facebookApiKey" value="<?php echo $salvati['facebookApiKey']; ?>"  /></td>
-				  
-			    </tr>
-				<tr>
-				<td>SECRET </td><td><input class="txtMedio" type="text" id="facebookSECRET" name="facebookSECRET" value="<?php echo $salvati['facebookSECRET']; ?>"  /></td>
-				</tr>
+			<ul id="ulmenu">
+				<li  <?php if ( $salvati['AOL']=="on") $col="#99FF99";else $col="#FFCCCC"; echo "style=\"background-color:".$col.";\""?> ><input type="checkbox" name="AOL"<?php if ( $salvati['AOL']=="on") echo "CHECKED";?>></li><li <?php echo "style=\"background-color:".$col.";\""?>  class="msg_head"><u>AOL</u></li><li class="msg_body">
+					<label for="aolMod1">API<input onclick="methodSelected(this);" type="radio" name="aolMod" id="aolMod1" value="API" <?php if ($salvati['aolMod']=="API") echo "checked"?> disabled ></label><br />
+					<label for="aolMod2">Scraper<input  onclick="methodSelected(this);"  type="radio"  id="aolMod" name="aolMod2" value="cURL"<?php if ($salvati['aolMod']!="API") echo "checked"?>></label><br /><br />
+				</li>
+			</ul>
 				
 				
-				<tr>
-					<td>Application Name</td><td><input class="txtMedio" type="text" id="facebookAppName" name="facebookAppName" value="<?php echo $salvati['facebookAppName']; ?>" /></td>
-					
-				</tr>
-				<tr>
-					<td>Application URL</td>
-					<td>http://apps.facebook.com/<input class="txtMedio" type="text" id="facebookAppURL" name="facebookAppURL" value="<?php echo $salvati['facebookAppURL']; ?>" /></td>
-				</tr>
-				<tr>
-					<td>Redirect URL </td><td><input class="txtMedio" type="text" id="facebookRedURL" name="facebookRedURL" value="<?php echo $salvati['facebookRedURL']; ?>" /></td>
-					
-				</tr>
-			</table>
+			<ul id="ulmenu">
+				<li  <?php if ( $salvati['CSV']=="on") $col="#99FF99";else $col="#FFCCCC"; echo "style=\"background-color:".$col.";\""?> ><input type="checkbox" name="CSV"<?php if ( $salvati['CSV']=="on") echo "CHECKED";?>></li><li <?php echo "style=\"background-color:".$col.";\""?>  class="msg_head"><u>CSV Upload</u></li><li class="msg_body">
+				<?php echo WP_CONTENT_DIR ; ?>/<input class="txtLungo" type="text" name="uploadFile" value="<?php echo $salvati['uploadFile']; ?>"/><br />
+				</li>
+			</ul>
+				
+		
+			<ul id="ulmenu">
+				<li  <?php if ( $salvati['Twitter']=="on") $col="#99FF99";else $col="#FFCCCC"; echo "style=\"background-color:".$col.";\""?> ><input type="checkbox" name="Twitter"<?php if ( $salvati['Twitter']=="on") echo "CHECKED";?>></li><li <?php echo "style=\"background-color:".$col.";\""?>  class="msg_head"><u>Twitter</u></li><li class="msg_body">
+				No option<br />
+				</li>	
+			</ul>
 			
+			<ul id="ulmenu">
+				<li  <?php if ( $salvati['Facebook']=="on") $col="#99FF99";else $col="#FFCCCC"; echo "style=\"background-color:".$col.";\""?> ><input type="checkbox" name="Facebook" <?php if ( $salvati['Facebook']=="on") echo "CHECKED";?>> </li><li <?php echo "style=\"background-color:".$col.";\""?>  class="msg_head"><u>Facebook</u></li><li class="msg_body">
+				<a href="http://www.facebook.com/developers/"><b>Create your Facebook Application</b></a><br />
+				<?php _e("Ensure that the Canvas Page URL and that your Side Nav URL are both in lowercase!");?><br />
+				<b>Use:</b> <br />FBML/iframe: FBML <br/>
+							Developer Mode:    Disabled <br />
+							Application Type:  Website<br />
+							Private Install:    No<br />
+				<label for="facebookApiKey">API Key</label><input  class="txtMedio" type="text" id="facebookApiKey" name="facebookApiKey" value="<?php echo $salvati['facebookApiKey']; ?>"  /><br />	
+				<label for="facebookSECRET">SECRET</label> <input class="txtMedio" type="text" id="facebookSECRET" name="facebookSECRET" value="<?php echo $salvati['facebookSECRET']; ?>" /><br />	
+				<label for="facebookAppName">Application Name</label> <input class="txtMedio" type="text" id="facebookAppName" name="facebookAppName" value="<?php echo $salvati['facebookAppName']; ?>" /><br />	
+	
+				 <br /><b>Application URL</b><br />
+				<label for="facebookAppURL">http://apps.facebook.com/</label> <input class="txtMedio" type="text" id="facebookAppURL" name="facebookAppURL" value="<?php echo $salvati['facebookAppURL']; ?>" /><br />	
+				<label for="facebookAppURL">Redirect URL</label> <input class="txtMedio" type="text" id="facebookRedURL" name="facebookRedURL" value="<?php echo $salvati['facebookRedURL']; ?>" /><br />	
+				
+				</li>	
+			</ul>
 			
 
 			<input type="hidden" name="action" value="update" />
 			<input type="hidden" name="editInvite" value="ok" />
 			<p class="submit">
-				<input type="submit" name="Submit" value="<?php _e('Save Changes') ?>" />
+			<br />
+				<input class="invio" type="submit" name="Submit" value="<?php _e('Save Changes') ?>" />
 			</p>	
+			
+			</div>
+			
+			
+			
 		</form>
 		
 		  
@@ -656,6 +615,64 @@ function admin_invitefriends_header() {
 	InstallationChecker::CSS_ERROR . "\n" .
 	".txtMedio{width:400px;}"."\n".
 	".txtLungo{width:600px;}"."\n".
+	"p {
+		padding: 0 0 1em;
+	}
+
+.msg_list {
+margin: 0px;
+padding: 0px;
+width: 620px;
+}
+.msg_head {
+padding: 5px 10px;
+cursor: pointer;
+position: relative;
+margin:1px;
+width: 560px;
+}
+
+.invio{
+float: left;
+cursor: pointer;
+position: relative;
+display:inline;
+}
+.submit{
+float: left;
+cursor: pointer;
+position: relative;
+display:inline;
+}
+
+.msg_body {
+padding: 5px 10px 15px;
+background-color:#F4F4F8;
+width: 600px;
+}
+
+
+label {
+text-align: right;
+margin: 5px;
+width: 142px;
+padding-right: 20px;
+float: left;
+}
+
+br {
+clear: left;
+}
+#ulmenu li {
+display:inline;
+float:left;
+cursor:pointer;
+margin: 1px 0px 1px 0px;
+padding:5px 10px;
+position:relative;
+}
+
+".
 	
 	"</style>";
 ?>
@@ -700,7 +717,26 @@ function admin_invitefriends_header() {
 				
 				
 			}
+			
+			
+			
+		
 	</script>
+	
+ <script src="../wp-content/mu-plugins/bp-invitefriends/lib/jquery.js" type="text/javascript"></script>	
+<script type="text/javascript">
+$(document).ready(function()
+{
+  //hide the all of the element with class msg_body
+  $(".msg_body").hide();
+  //toggle the componenet with class msg_body
+  
+  $(".msg_head").click(function()
+  {
+    $(this).next(".msg_body").slideToggle(600);
+  });
+});
+</script>
 
 	<?php
 	echo '<!-- End Of Script Generated By Post-Thumb Revisited Admin -->'."\n";

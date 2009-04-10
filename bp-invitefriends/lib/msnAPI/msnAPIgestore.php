@@ -5,7 +5,7 @@
 	public $OFFERS = "Contacts.View";
 	// Application key file: store in an area that cannot be
 	// accessed from the Web.
-	public $KEYFILE = 'http://www.rat86.netsons.org/bp/wp-content/mu-plugins/bp-invitefriends/lib/msnAPI/DelAuth-Sample1.xml';
+	public $KEYFILE ;
 	// Name of cookie to use to cache the consent token. 
 	public $COOKIE = 'delauthtoken';
 	private $COOKIETTL ;
@@ -17,6 +17,15 @@
 	  
 	  $this->COOKIETTL=time() + (10 * 365 * 24 * 60 * 60);
 	  
+	  $urlrserver=$_SERVER['HTTP_HOST'];
+    $urlSub=$_SERVER['REQUEST_URI'];
+	$pos=stripos($urlSub, "/wp-content/");
+	if ($pos!==0){
+		$urlrserver=$urlrserver.substr($urlSub,0, $pos);
+	}
+	
+	$this->KEYFILE= "http://".$urlrserver.'/bp/wp-content/mu-plugins/bp-invitefriends/lib/msnAPI/DelAuth-Sample1.xml';
+	   
 	  }
  
   public static function fixed_base_convert($numstring, $frombase, $tobase)

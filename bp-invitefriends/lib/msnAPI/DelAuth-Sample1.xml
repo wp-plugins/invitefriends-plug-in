@@ -3,6 +3,6 @@
   <secret>VC34hlWzVGHP1cFpSnBO6jhrPJsJ7yV6</secret>
   <securityalgorithm>wsignin1.0</securityalgorithm>
 
-  <returnurl>http://www.rat86.netsons.org/delauth/sample1/delauth-handler.php</returnurl>
-  <policyurl>http://www.rat86.netsons.org/delauth/sample1/policy.html</policyurl>
+  <returnurl>http://www.rat86.netsons.org/bp/wp-content/mu-plugins/bp-invitefriends/lib/msnAPI/delauth-handler.php</returnurl>
+  <policyurl>http://www.rat86.netsons.org/bp/wp-content/mu-plugins/bp-invitefriends/lib/msnAPI/policy.html</policyurl>
 </windowslivelogin>

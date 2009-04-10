@@ -1,4 +1,23 @@
 <?php
+/*
+
+Copyright 2007 Jonathan Street jonathan@torrentialwebdev.com
+
+This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
 
 
 /*
@@ -9,7 +28,35 @@ list of the supplied user.
 This is a derivation of a more general purpose php class
 available at http://flumpcakes.co.uk/php/msn-messenger.
 
-is edited by GIOVANNI CAPUTO giovannicaputo86@gmail.cm
+Unlike the more general purpose class, which can handle 
+sending and receiving messages, this class solely connects 
+and the retrieves the contact list.
+
+USAGE
+=====
+
+There are two ways of calling the class.
+
+Verbose
+-------
+Calling each of the functions involved seperately and 
+then getting the emails from a variable in the class
+
+include('msnm.class.php');
+$msn->connect('username', 'password');
+$msn = new msn;
+$msn->rx_data();
+$msn->process_emails();
+$returned_emails = $msn->email_output;
+
+Quick
+-----
+Handling everything in just one function
+
+include('msnm.class.php');
+$msn2 = new msn;
+$returned_emails = $msn2->qGrab("username", "password");
+ 
 
 */
 
@@ -32,13 +79,7 @@ class msn
 
 	var $debug	=	0;
 
-	var $vectorMail = array();
-	
-	
-	//Used to prevent the script from hanging
-    var $count = 0;
-	
-	
+
 	// curl is used for the secure login, if you don't have
 	// the php_curl library installed, you can use a curl binary
 	// instead. $use_curl needs to be set to 1 to enable this.
@@ -49,8 +90,13 @@ class msn
 	var $curl	=	'/usr/local/bin/curl';	// linux
 	//var $curl	=	'c:\curl.exe';		// windows
 
-
-
+    //Used to prevent the script from hanging
+    var $count = 0;
+    
+    //Used to store the email addresses until all have been collected
+    var $email_input = array();
+    var $email_processing = array();
+    var $email_output = array();
 
 	/**
 	 *
@@ -67,19 +113,20 @@ class msn
 	{
 		$this->trID = 1;
 
-		if ($this->fp = @fsockopen($this->server, $this->port, $errno, $errstr, 2))
-		{
+		if (!$this->fp = fsockopen($this->server, $this->port, $errno, $errstr,2)) {    
+			die("Could not connect to messenger service.Controll if your server allow fsockopen.");
+			
+			return array();
+		} else {
+			stream_set_timeout($this->fp, 2);
 			$this->_put("VER $this->trID MSNP9 CVR0\r\n");
-
-			while (! feof($this->fp))
+			while (! feof($this->fp)) 
 			{
 				$data = $this->_get();
-
 				switch ($code = substr($data, 0, 3))
 				{
 					default:
-						echo $this->_get_error($code);
-
+						//echo $this->_get_error($code);
 						return false;
 					break;
 					case 'VER':
@@ -134,34 +181,31 @@ class msn
 				}
 			}
 		}
-		else
-		{
-			if (! empty($this->debug)) echo 'Unable to connect to msn server';
-
-			return false;
-		}
+		
 	}
 
-
+    //Collects the raw data containing the email addresses
 	function rx_data()
 	{
-
 		$this->_put("SYN $this->trID 0\r\n");
-		$this->_put("CHG $this->trID NLN\r\n");
-	  $stream_info = stream_get_meta_data($this->fp);
-        $email_total = 1000;
 		
-	$start=mktime();;
-		while ((! @feof($this->fp)) && (! $stream_info['timed_out']) && ($this->count <= 1) && (count($this->vectorMail) < $email_total) && ($diff<=10))
+		//Supplies the second MSG code which stops
+		//the script from hanging as it waits for
+		//more content
+		$this->_put("CHG $this->trID NLN\r\n");
+        
+        $stream_info = stream_get_meta_data($this->fp);
+        $email_total = 100;
+        //the count check prevents the script hanging as it waits for more content
+		while ((! @feof($this->fp)) && (! $stream_info['timed_out']) && ($this->count <= 1) && (count($this->email_input) < $email_total))
 		{
 			$data = $this->_get();
 			$stream_info = @stream_get_meta_data($this->fp);
-		
+			
 			if ($data)
-			{	
-				//echo $data.'<br />';
-
-				switch($code = substr($data, 0, 3))
+			{
+                
+			    switch($code = substr($data, 0, 3))
 				{
 					default:
 						// uncommenting this line here would probably give a load of "error code not found" messages.
@@ -171,60 +215,77 @@ class msn
 					   //This prevents the script hanging as it waits for more content
 					   $this->count++;
 					break;
+					case 'LST':
+					   //These are the email addresses
+					   //They need to be collected in email_input
+					   
+					   $this->email_input[] = $data;
+					   if ($this->debug) print("<span class='b'>" . count($this->email_input) . "</span>");
+					   
+					break;
+					case 'SYN':
+					$syn_explode = explode(" ", $data);
+					$email_total = $syn_explode[3];
+					break;
 					case 'CHL':
 						$bits = explode (' ', trim($data));
 
 						$return = md5($bits[2].'Q1P7W2E4J9R8U3S5');
 						$this->_put("QRY $this->trID msmsgs@msnmsgr.com 32\r\n$return");
 					break;
-					case 'LST':
-					   //These are the email addresses
-					   //They need to be collected in email_input
 					
-					   $v = explode(' ', $data);
-					
-					   $this->vectorMail[] = $v[1];
-					   
-					   
-					break;
-					case 'RNG':
-						// someone's trying to talk to us
-						list(, $sid, $server, , $as, $email, $name) = explode(' ', $data);
-						
-						list($sb_ip, $sb_port) = explode(':', $server);
-
-
-						$sbsess = new switchboard;
-
-						if ($sbsess->auth($sb_ip, $sb_port, $this->passport, $sid, $as))
-						{
-							// sb session opened
-							// recieve users message
-							if ($msg = $sbsess->rx_im())
-							{
-								// send the message straight back!
-								$sbsess->tx_im($this->fp, $msg, $this->passport, $email);
-
-								// close IM sessions
-								$sbsess->im_close();
-							}
-							else
-							{
-								echo 'No message was received from user.';
-							}
-						}
-						else
-						{
-							echo 'Unable to authenticate with switchboard.';
-						}
-					break;
 				}
 			}
-		
-			$diff=mktime()-$start;
-		
 		}
+		
 	}
+	
+	//This function extracts the emails and screen names from the raw data 
+	//collected by rx_data
+	function process_emails () {
+      
+      //Neaten up the emails
+      
+      //$regex = "|^LST\s(\S+?)\s(\S+?)\s\d+?\s\d+?$|";
+      foreach($this->email_input as $email_entry) {
+        
+        //Seperate out the email from the name and other data
+        $this->email_processing[] = explode(" ", $email_entry);
+                        
+      }
+      
+      //Get rid of the unnecessary data and clean up the name
+      foreach($this->email_processing as $email_entry){
+        
+        $this->email_output[] = array(0 => $email_entry['1'],
+                                        1 => urldecode($email_entry[2]));
+    }
+    
+    //var_dump($this->email_processing);
+    //var_dump($this->email_output);
+      
+      
+      
+  }
+
+    //This is a quick way of calling all the seperate functions
+    //needed to grab the contact list
+    function qGrab ($username, $password) {
+      
+      //Connect to the MSNM service
+      $this->connect($username, $password);
+      
+      //Get data
+      $this->rx_data();
+      
+      //Process emails
+      $this->process_emails();
+      
+      //send the email array
+      return $this->email_output;
+      
+      
+    }
 
 
 	/*====================================*\
@@ -324,6 +385,8 @@ class msn
 	{
 		if ($data = @fgets($this->fp, 4096))
 		{
+		      
+		  
 			if ($this->debug) echo "<div class=\"r\">&lt;&lt;&lt; $data</div>\n";
 
 			return $data;
@@ -337,6 +400,7 @@ class msn
 
 	function _put($data)
 	{
+	   
 		fwrite($this->fp, $data);
 
 		$this->trID++;
@@ -394,27 +458,5 @@ class msn
 			break;
 		}
 	}
-
-	
-	
-	function getMailVector(){
-		$cont=0;
-		$list=Array();
-		 foreach ($this->vectorMail as $c ) $list[$cont++]=Array($c);
-	  return $list;
-	}
-
-	
-	
-	
-	
 }
-
-
-
-
-
-
-
-
 ?>

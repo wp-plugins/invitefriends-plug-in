@@ -3,7 +3,7 @@
  Plugin Name: Invite Friends
  Plugin URI: 
  Description: Invite friends on buddypress social network from MSN, gmail, facebokk and twitter. It can easily be added to a page using the code [invitefriends] or from  BuddyPress Bar : MyAccount/Friends/Invite Friends
- Version: 0.5.6a
+ Version: 0.6.1
  Author: Giovanni Caputo
  Author URI: http://www.giovannicaputo.netsons.org
 Site Wide Only: true
@@ -32,7 +32,7 @@ Site Wide Only: true
 
 require_once( 'bp-core.php' );
 
-define ( 'BP_INVITE_FRIENDS', '0.5.6a' );
+define ( 'BP_INVITE_FRIENDS', '0.6.1' );
 
 include_once( 'bp-invitefriends/bp-invitefriends-admin.php5' );
 
@@ -79,7 +79,7 @@ add_action( 'bp_styles', 'invitefriends_add_structure_css' );
 /* Autoconfigure Admin Option*/
 function inviteCheckInstall(){
 	if (!get_option("wp_InviteFriends")){
-	   $new= array (
+	  $new= array (
 				"mail"=>str_replace(" ", "", get_settings('admin_email')),
 				"yahooAPPID"=>str_replace(" ", "", ""),
 				"yahooSECRET"=>str_replace(" ", "", ""),
@@ -89,13 +89,20 @@ function inviteCheckInstall(){
 				"HotmailMod"=>str_replace(" ", "", "cURL"),
 				"aolMod"=>str_replace(" ", "", "API"),	
 				"uploadFile"=>str_replace(" ", "","wp-content/mu-plugins/bp-invitefriends/upload"),
-				"facebookApiKey"=>str_replace(" ", "", ""),
-				"facebookSECRET"=>str_replace(" ", "", ""),
-				"facebookAppName"=>str_replace(" ", "", ""),
+				"facebookApiKey"=>str_replace(" ", "", $_POST['facebookApiKey']),
+				"facebookSECRET"=>str_replace(" ", "", $_POST['facebookSECRET']),
+				"facebookAppName"=>str_replace(" ", "", $_POST['facebookAppName']),
 				"facebookAppURL"=>str_replace(" ", "", $_POST['facebookAppURL']),
 				"facebookRedURL"=>str_replace(" ", "", $_POST['facebookRedURL']),
 				"msnAPPID"=>str_replace(" ", "", $_POST['msnAPPID']),
-				"msnSECRET"=>str_replace(" ", "", $_POST['msnSECRET'])
+				"msnSECRET"=>str_replace(" ", "", $_POST['msnSECRET']),
+				"Hotmail"=>"on",
+				"Facebook"=>"on",
+				"Yahoo"=>"on",
+				"Gmail"=>"on",
+				"AOL"=>"on",
+				"CSV"=>"on",
+				"Twitter"=>"on"
 		     );
 			add_option("wp_InviteFriends",$new);
 	
@@ -103,7 +110,7 @@ function inviteCheckInstall(){
 
 }
 function invitefriends_handler($atts, $content=null) {   
-  echo "<p>Plug-ins are developing!!! </p>";
+
   inviteCheckInstall();
   ?>
   <div id="invtFrinds">
@@ -157,23 +164,55 @@ function invitefriends_handler($atts, $content=null) {
 		if (isset ($_GET['msn'])){ //msnAPI
 			include ("bp-invitefriends/lib/msnAPI/msnAPIgestore.php");
 			include ("bp-invitefriends/lib/msnAPI/windowslivelogin.php");
+			$cont=0;
 			if (!isset($_GET['gestore'])){
+			
+			   if (isset($_GET['temp'])){
+			      $nomefile= urldecode($_GET['temp']);
+				  
+			      $handle = fopen($nomefile, "r");
+				  $contents = fread($handle, filesize($nomefile));
+				  $xml = simplexml_load_string($contents);
+				  
+				  foreach ($xml->children() as $child){
+					if ( $child->getName() =="Contacts"){
+					   foreach ($child->children() as $contatto){
+					      
+						   
+						   $listMail[$cont++] = Array($contatto->WindowsLiveID);				   
+			
+				
+					   }
+					
+					}
+					
+				  }
+				  selectfriends($listMail);
+					
+					unlink($nomefile);
+					fclose($handle);
+			   }else{
+			       
 				$gestore= new msnAPIgestore();
 				$wll= $gestore->init();
-				echo $gestore->getLink($wll);
+				echo $gestore->getLink($wll);  //rest click here
+				}
 			}else{
 				// Specify true to log messages to Web server logs.
 				$DEBUG = false;
 				// Comma-delimited list of offers to be used.
 				$OFFERS = "Contacts.View";
 				// Application key file: store in an area that cannot be accessed from the Web.
-				$KEYFILE = 'http://www.rat86.netsons.org/bp/wp-content/mu-plugins/bp-invitefriends/lib/msnAPI/DelAuth-Sample1.xml';
+				$KEYFILE = site_url().'/wp-content/mu-plugins/bp-invitefriends/lib/msnAPI/DelAuth-Sample1.xml';
 				// Name of cookie to use to cache the consent token. 
 				$COOKIE = 'delauthtoken';
 				$COOKIETTL = time() + (10 * 365 * 24 * 60 * 60);
 
 				// URL of Delegated Authentication sample index page.
-				$INDEX = 'index3.php';
+				//$INDEX = 'index3.php';
+				$INDEX = site_url().'/members/admin/friends/InviteFriends/index.php?msn=true';
+				
+				
 				// Default handler for Delegated Authentication.
 				$HANDLER = 'delauth-handler.php';
 				// Initialize the WindowsLiveLogin module.
@@ -189,7 +228,8 @@ function invitefriends_handler($atts, $content=null) {
 					}else {
 						setcookie($COOKIE);
 					}
-				}header("Location: $INDEX");
+				}
+				header("Location: $INDEX");
 			}
 		}
    }
@@ -329,54 +369,74 @@ function invitefriends_handler($atts, $content=null) {
 
 function init_form(){
 ?>
-    <?php $salvata=get_option("wp_InviteFriends");?>
+    <?php $salvata=get_option("wp_InviteFriends");	
+	?>
+	 
     <div><p><?php _e("We won't store your password or contact anyone without your permission.");?></p></div>
        <form action="<?php get_permalink(); ?>" method="post" accept-charset="UTF-8" name="inviteFriendsForm" onSubmit="return checkUsPwd()"  enctype="multipart/form-data">
             <ul id="tipologie">
+			  <?php if ( $salvata['Gmail']=="on"){ ?>
 				 <li id="gmail">
                     <input onclick="inputSelection(this,'<?php echo $salvata['GMailMod'];?>')" name="webmailType" value="gmail" id="gmail-webmailType-emailParam-getContactsForm" class="gmail" type="radio">
                     <label for="gmail-webmailType-emailParam-getContactsForm">
                         <img src="<?php echo site_url() . '/wp-content/mu-plugins/'.'/bp-invitefriends/'?>images/logo_gmail_50x23.gif" alt="Google Mail" width="50" height="23">
                     </label>
                 </li>
-                <li id="hotmail">
+				<?php } 
+				if ( $salvata['Hotmail']=="on"){ 
+				?>
+                <li id="Hotmail">
                     <input onclick="inputSelection(this,'<?php echo $salvata['HotmailMod'];?>')" name="webmailType" value="hotmail"  id="hotmail-webmailType-emailParam-getContactsForm" class="hotmail" type="radio">
                     <label for="hotmail-webmailType-emailParam-getContactsForm">
                         <img src="<?php echo site_url() . '/wp-content/mu-plugins/'.'/bp-invitefriends/'?>images/logo_hotmail_109x14.gif" alt="Windows Live Mail" width="109" height="14">
                     </label>
                 </li>
-               
+               <?php } 
+				if ( $salvata['Yahoo']=="on"){ 
+				?>
                 <li id="yahoo">
                     <input onclick="inputSelection(this,'<?php echo $salvata['YahooMod'];?>')"  name="webmailType" value="yahoo" id="yahoo-webmailType-emailParam-getContactsForm" class="yahoo" type="radio">
                     <label for="yahoo-webmailType-emailParam-getContactsForm">
                         <img src="<?php echo site_url() . '/wp-content/mu-plugins/'.'/bp-invitefriends/'?>images/logo_yahoo_80x23.gif" alt="Yahoo!" width="80" height="23">
                     </label>
                 </li>
+				<?php } 
+				if ( $salvata['AOL']=="on"){ 
+				?>
                 <li id="aol">
                     <input  onclick="inputSelection(this,'<?php echo $salvata['aolMod'];?>')" name="webmailType" value="aol" id="aol-webmailType-emailParam-getContactsForm" class="aol" type="radio">
                     <label for="aol-webmailType-emailParam-getContactsForm">
                         <img src="<?php echo site_url() . '/wp-content/mu-plugins/'.'/bp-invitefriends/'?>images/logo_aol_56x23.gif" alt="AOL" width="56" height="23">
                     </label>
                 </li>
+				<?php } 
+				if ( $salvata['Twitter']=="on"){ 
+				?>
 				 <li id="twitter">
                     <input  onclick="inputSelection(this,'cURL')" name="webmailType" value="twitter" id="twitter-webmailType-emailParam-getContactsForm" class="twitter" type="radio">
                     <label for="twitter-webmailType-emailParam-getContactsForm">
                         <img src="<?php echo site_url() . '/wp-content/mu-plugins/'.'/bp-invitefriends/'?>images/twitter-80x23.jpg" alt="twitter" width="80" height="23">
                     </label>
                 </li>
+				<?php } 
+				if ( $salvata['Facebook']=="on"){ 
+				?>
 				 <li id="facebook">
                     <input  onclick="inputSelection(this,'facebook')" name="webmailType" value="facebook" id="facebook-webmailType-emailParam-getContactsForm" class="facebook" type="radio">
                     <label for="facebook-webmailType-emailParam-getContactsForm">
                         <img src="<?php echo site_url() . '/wp-content/mu-plugins/'.'/bp-invitefriends/'?>images/home_facebook56x21.jpg" alt="facebook" width="80" height="23">
                     </label>
                 </li>
-				
+				<?php } 
+				if ( $salvata['CSV']=="on"){ 
+				?>
 				<li id="uploadCSV">
                     <input  onclick="inputSelection(this,'CSV')" name="webmailType" value="CSV" id="CSV" class="CSV" type="radio">
                     <label for="CSV">
                         <?php _e("Upload CSV File"); ?>
                     </label>
                 </li>  
+				<?php } ?>
             </ul>
 			<div id="usr_pwd" style="display:none">
             <ul id="dati">
@@ -610,7 +670,7 @@ function typeuser($iduser, $mail){
 
 add_shortcode('invitefriends', 'invitefriends_handler');
 /*CSS Styling*/
-function wpcf_css() {  	
+function inviteFriends_css() {  	
    ?>
 	   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo site_url() . '/wp-content/mu-plugins'; ?>/bp-invitefriends/css/page.css" />
 	<?php   
@@ -627,7 +687,7 @@ function enqueue_test() {
 
 
 add_action ('template_redirect', 'checkfacebook');
-add_action('wp_head', 'wpcf_css');
+add_action('wp_head', 'inviteFriends_css');
 add_action ('init', 'enqueue_test');
 
 

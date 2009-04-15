@@ -24,7 +24,7 @@
 		$urlrserver=$urlrserver.substr($urlSub,0, $pos);
 	}
 	
-	$this->KEYFILE= "http://".$urlrserver.'/bp/wp-content/mu-plugins/bp-invitefriends/lib/msnAPI/DelAuth-Sample1.xml';
+	$this->KEYFILE= "http://".$urlrserver.'/bp/wp-content/plugins/buddypress/bp-invitefriends/lib/msnAPI/DelAuth-Sample1.xml';
 	   
 	  }
  

@@ -405,10 +405,10 @@ class InstallationChecker {
 				"yahooSECRET"=>str_replace(" ", "", ""),
 				"YahooMod"=>str_replace(" ", "", "API"),
 				"GMailMod"=>str_replace(" ", "", "API"),
-				"ZendUrl"=>str_replace(" ", "", WP_CONTENT_DIR ."/mu-plugins/bp-invitefriends/lib/Gmail/library"),	
+				"ZendUrl"=>str_replace(" ", "", BP_PLUGIN_DIR."/bp-invitefriends/lib/Gmail/library"),	
 				"HotmailMod"=>str_replace(" ", "", "cURL"),
 				"aolMod"=>str_replace(" ", "", "API"),	
-				"uploadFile"=>str_replace(" ", "","wp-content/mu-plugins/bp-invitefriends/upload"),
+				"uploadFile"=>str_replace(" ", "",BP_PLUGIN_DIR),
 				"facebookApiKey"=>str_replace(" ", "", $_POST['facebookApiKey']),
 				"facebookSECRET"=>str_replace(" ", "", $_POST['facebookSECRET']),
 				"facebookAppName"=>str_replace(" ", "", $_POST['facebookAppName']),
@@ -468,12 +468,12 @@ class InstallationChecker {
   <appid>".$_POST['msnAPPID']."</appid>
   <secret>".$_POST['msnSECRET']."</secret>
   <securityalgorithm>wsignin1.0</securityalgorithm>
-  <returnurl>".site_url()."/wp-content/mu-plugins/bp-invitefriends/lib/msnAPI/delauth-handler.php</returnurl>
-  <policyurl>".site_url()."/wp-content/mu-plugins/bp-invitefriends/lib/msnAPI/policy.html</policyurl>
+  <returnurl>".BP_PLUGIN_DIR."/bp-invitefriends/lib/msnAPI/delauth-handler.php</returnurl>
+  <policyurl>".BP_PLUGIN_DIR."/bp-invitefriends/lib/msnAPI/policy.html</policyurl>
 </windowslivelogin>";
 		echo  "<br />";
 
-		$handle = fopen(WP_CONTENT_DIR."/mu-plugins/bp-invitefriends/lib/msnAPI/DelAuth-Sample1.xml", "w");
+		$handle = fopen(BP_PLUGIN_DIR."/bp-invitefriends/lib/msnAPI/DelAuth-Sample1.xml", "w");
 		fwrite ($handle, $string);
 		fclose($handle);
 					
@@ -485,6 +485,15 @@ class InstallationChecker {
 		<div class="wrap">
 		
 		<h2><?php echo __("Invite friends"); ?></h2>
+		
+		<?php
+		 echo "<br />BP_PLUGIN_URL:".BP_PLUGIN_URL; 
+		 echo "<br />BP_PLUGIN_DIR:".BP_PLUGIN_DIR;
+		 echo "<br />site_url():".site_url();
+		 echo "<br />WP_CONTENT_DIR():".WP_CONTENT_DIR;
+		?>
+		
+		
 		<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>?page=<?php echo basename(__FILE__); ?>">
 		<label for="mailFROM"><?php echo __("Mail from:") ?></label><input class="txtMedio" type="text" name="mailFROM" id="mailFROM" value="<?php echo $salvati['mail']; ?>" /><br /><br /><br />
 		
@@ -526,7 +535,7 @@ class InstallationChecker {
 						echo __("The path to your web accessable folder is: /home/USERID/public_html/. 
 						Where USERID is your account name (usually the first seven characters of your domain name).
 						<br /><b>Suggest: </b>"); 
-						echo WP_CONTENT_DIR ."/mu-plugins/bp-invitefriends/lib/Gmail/library";?>
+						echo BP_PLUGIN_DIR."/bp-invitefriends/lib/Gmail/library";?>
 						<input class="txtLungo" type="text" id="ZendUrl" name="ZendUrl" value="<?php echo $salvati['ZendUrl']; ?>" <?php if ($salvati['GMailMod']=="cURL") echo "disabled"?>/><br /><br />
 						<b>Zend Installation Checker</b><br />
 						<?php $installationChecker = new InstallationChecker();   ?>
@@ -723,7 +732,7 @@ position:relative;
 		
 	</script>
 	
- <script src="../wp-content/mu-plugins/bp-invitefriends/lib/jquery.js" type="text/javascript"></script>	
+ <script src="<?php echo BP_PLUGIN_URL. "/bp-invitefriends/lib/jquery.js";?>" type="text/javascript"></script>	
 <script type="text/javascript">
 $(document).ready(function()
 {

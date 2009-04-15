@@ -3,7 +3,7 @@
  Plugin Name: Invite Friends
  Plugin URI: 
  Description: Invite friends on buddypress social network from MSN, gmail, facebokk and twitter. It can easily be added to a page using the code [invitefriends] or from  BuddyPress Bar : MyAccount/Friends/Invite Friends
- Version: 0.6.1
+ Version: 0.7.1
  Author: Giovanni Caputo
  Author URI: http://www.giovannicaputo.netsons.org
 Site Wide Only: true
@@ -36,7 +36,7 @@ define ( 'BP_INVITE_FRIENDS', '0.6.1' );
 
 include_once( 'bp-invitefriends/bp-invitefriends-admin.php5' );
 
-load_plugin_textdomain('invfri', site_url() . '/wp-content/mu-plugins/'.'bp-invitefriends/languages'); 
+load_plugin_textdomain('invfri', BP_PLUGIN_URL.'/bp-invitefriends/languages'); 
 
 function invitefriends_nav() {
 	global $bp;
@@ -67,28 +67,29 @@ function wp_invitefriends_content() {
 
 function invitefriends_add_js() {
 	
-	wp_enqueue_script( 'filtrocontatti', site_url() . '/wp-content/mu-plugins/bp-invitefriends/js/filtrocontatti.js', false, '' );
+	wp_enqueue_script( 'filtrocontatti', BP_PLUGIN_URL . '/bp-invitefriends/js/filtrocontatti.js', false, '' );
 }
 add_action( 'template_redirect', 'invitefriends_add_js' );
 
 function invitefriends_add_structure_css() {
-	wp_enqueue_style( 'bp-invitefriends-structure', site_url() . '/wp-content/mu-plugins/bp-invitefriends/css/page.css' );	
+	wp_enqueue_style( 'bp-invitefriends-structure', BP_PLUGIN_URL . '/bp-invitefriends/css/page.css' );	
 }
 add_action( 'bp_styles', 'invitefriends_add_structure_css' );
 
 /* Autoconfigure Admin Option*/
 function inviteCheckInstall(){
-	if (!get_option("wp_InviteFriends")){
-	  $new= array (
+if (!get_option("wp_InviteFriends")){
+	  
+	   $new= array (
 				"mail"=>str_replace(" ", "", get_settings('admin_email')),
 				"yahooAPPID"=>str_replace(" ", "", ""),
 				"yahooSECRET"=>str_replace(" ", "", ""),
 				"YahooMod"=>str_replace(" ", "", "API"),
 				"GMailMod"=>str_replace(" ", "", "API"),
-				"ZendUrl"=>str_replace(" ", "", WP_CONTENT_DIR ."/mu-plugins/bp-invitefriends/lib/Gmail/library"),	
+				"ZendUrl"=>str_replace(" ", "", BP_PLUGIN_DIR."/bp-invitefriends/lib/Gmail/library"),	
 				"HotmailMod"=>str_replace(" ", "", "cURL"),
 				"aolMod"=>str_replace(" ", "", "API"),	
-				"uploadFile"=>str_replace(" ", "","wp-content/mu-plugins/bp-invitefriends/upload"),
+				"uploadFile"=>str_replace(" ", "",BP_PLUGIN_DIR),
 				"facebookApiKey"=>str_replace(" ", "", $_POST['facebookApiKey']),
 				"facebookSECRET"=>str_replace(" ", "", $_POST['facebookSECRET']),
 				"facebookAppName"=>str_replace(" ", "", $_POST['facebookAppName']),
@@ -106,7 +107,7 @@ function inviteCheckInstall(){
 		     );
 			add_option("wp_InviteFriends",$new);
 	
-	}
+	}else {}
 
 }
 function invitefriends_handler($atts, $content=null) {   
@@ -203,14 +204,14 @@ function invitefriends_handler($atts, $content=null) {
 				// Comma-delimited list of offers to be used.
 				$OFFERS = "Contacts.View";
 				// Application key file: store in an area that cannot be accessed from the Web.
-				$KEYFILE = site_url().'/wp-content/mu-plugins/bp-invitefriends/lib/msnAPI/DelAuth-Sample1.xml';
+				$KEYFILE = BP_PLUGIN_URL.'/bp-invitefriends/lib/msnAPI/DelAuth-Sample1.xml';
 				// Name of cookie to use to cache the consent token. 
 				$COOKIE = 'delauthtoken';
 				$COOKIETTL = time() + (10 * 365 * 24 * 60 * 60);
 
 				// URL of Delegated Authentication sample index page.
 				//$INDEX = 'index3.php';
-				$INDEX = site_url().'/members/admin/friends/InviteFriends/index.php?msn=true';
+				$INDEX = BP_PLUGIN_URL.'/members/admin/friends/InviteFriends/index.php?msn=true';
 				
 				
 				// Default handler for Delegated Authentication.
@@ -379,7 +380,7 @@ function init_form(){
 				 <li id="gmail">
                     <input onclick="inputSelection(this,'<?php echo $salvata['GMailMod'];?>')" name="webmailType" value="gmail" id="gmail-webmailType-emailParam-getContactsForm" class="gmail" type="radio">
                     <label for="gmail-webmailType-emailParam-getContactsForm">
-                        <img src="<?php echo site_url() . '/wp-content/mu-plugins/'.'/bp-invitefriends/'?>images/logo_gmail_50x23.gif" alt="Google Mail" width="50" height="23">
+                        <img src="<?php echo BP_PLUGIN_URL.'/bp-invitefriends/'?>images/logo_gmail_50x23.gif" alt="Google Mail" width="50" height="23">
                     </label>
                 </li>
 				<?php } 
@@ -388,7 +389,7 @@ function init_form(){
                 <li id="Hotmail">
                     <input onclick="inputSelection(this,'<?php echo $salvata['HotmailMod'];?>')" name="webmailType" value="hotmail"  id="hotmail-webmailType-emailParam-getContactsForm" class="hotmail" type="radio">
                     <label for="hotmail-webmailType-emailParam-getContactsForm">
-                        <img src="<?php echo site_url() . '/wp-content/mu-plugins/'.'/bp-invitefriends/'?>images/logo_hotmail_109x14.gif" alt="Windows Live Mail" width="109" height="14">
+                        <img src="<?php echo BP_PLUGIN_URL.'/bp-invitefriends/'?>images/logo_hotmail_109x14.gif" alt="Windows Live Mail" width="109" height="14">
                     </label>
                 </li>
                <?php } 
@@ -397,7 +398,7 @@ function init_form(){
                 <li id="yahoo">
                     <input onclick="inputSelection(this,'<?php echo $salvata['YahooMod'];?>')"  name="webmailType" value="yahoo" id="yahoo-webmailType-emailParam-getContactsForm" class="yahoo" type="radio">
                     <label for="yahoo-webmailType-emailParam-getContactsForm">
-                        <img src="<?php echo site_url() . '/wp-content/mu-plugins/'.'/bp-invitefriends/'?>images/logo_yahoo_80x23.gif" alt="Yahoo!" width="80" height="23">
+                        <img src="<?php echo BP_PLUGIN_URL.'/bp-invitefriends/'?>images/logo_yahoo_80x23.gif" alt="Yahoo!" width="80" height="23">
                     </label>
                 </li>
 				<?php } 
@@ -406,7 +407,7 @@ function init_form(){
                 <li id="aol">
                     <input  onclick="inputSelection(this,'<?php echo $salvata['aolMod'];?>')" name="webmailType" value="aol" id="aol-webmailType-emailParam-getContactsForm" class="aol" type="radio">
                     <label for="aol-webmailType-emailParam-getContactsForm">
-                        <img src="<?php echo site_url() . '/wp-content/mu-plugins/'.'/bp-invitefriends/'?>images/logo_aol_56x23.gif" alt="AOL" width="56" height="23">
+                        <img src="<?php echo BP_PLUGIN_URL.'/bp-invitefriends/'?>images/logo_aol_56x23.gif" alt="AOL" width="56" height="23">
                     </label>
                 </li>
 				<?php } 
@@ -415,7 +416,7 @@ function init_form(){
 				 <li id="twitter">
                     <input  onclick="inputSelection(this,'cURL')" name="webmailType" value="twitter" id="twitter-webmailType-emailParam-getContactsForm" class="twitter" type="radio">
                     <label for="twitter-webmailType-emailParam-getContactsForm">
-                        <img src="<?php echo site_url() . '/wp-content/mu-plugins/'.'/bp-invitefriends/'?>images/twitter-80x23.jpg" alt="twitter" width="80" height="23">
+                        <img src="<?php echo BP_PLUGIN_URL.'/bp-invitefriends/'?>images/twitter-80x23.jpg" alt="twitter" width="80" height="23">
                     </label>
                 </li>
 				<?php } 
@@ -424,7 +425,7 @@ function init_form(){
 				 <li id="facebook">
                     <input  onclick="inputSelection(this,'facebook')" name="webmailType" value="facebook" id="facebook-webmailType-emailParam-getContactsForm" class="facebook" type="radio">
                     <label for="facebook-webmailType-emailParam-getContactsForm">
-                        <img src="<?php echo site_url() . '/wp-content/mu-plugins/'.'/bp-invitefriends/'?>images/home_facebook56x21.jpg" alt="facebook" width="80" height="23">
+                        <img src="<?php echo BP_PLUGIN_URL.'/bp-invitefriends/'?>images/home_facebook56x21.jpg" alt="facebook" width="80" height="23">
                     </label>
                 </li>
 				<?php } 
@@ -672,7 +673,7 @@ add_shortcode('invitefriends', 'invitefriends_handler');
 /*CSS Styling*/
 function inviteFriends_css() {  	
    ?>
-	   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo site_url() . '/wp-content/mu-plugins'; ?>/bp-invitefriends/css/page.css" />
+	   <link rel="stylesheet" type="text/css" media="screen" href="<?php echo BP_PLUGIN_URL; ?>/bp-invitefriends/css/page.css" />
 	<?php   
 } 
 
@@ -680,7 +681,7 @@ function inviteFriends_css() {
 function enqueue_test() {
   //wp_register_script( 'myjquery', get_bloginfo('wpurl') . '/wp-content/plugins/invitefriends/js/jquery.js', false, '' );
   // wp_enqueue_script('myjquery');
-   wp_enqueue_script('filtrocontatti', site_url() . '/wp-content/mu-plugins/bp-invitefriends/js/filtrocontatti.js', false, ''); 
+   wp_enqueue_script('filtrocontatti', BP_PLUGIN_URL . '/bp-invitefriends/js/filtrocontatti.js', false, ''); 
 }
 
 

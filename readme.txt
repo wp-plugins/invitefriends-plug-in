@@ -23,7 +23,7 @@ It works under [wordpressMU](http://mu.wordpress.org/) + [BuddyPress](http://www
 0.3 - First release for RC1 version of BuddyPress.   
 0.5 - RC1 release with import rom Facebook and Twitter.  
 0.6 - RC1 Messenger API and new admin page.  
-0.7 - First release for RC2.  
+**0.7 - First release for RC2.**  
 
 
  

@@ -723,7 +723,7 @@ position:relative;
 		
 	</script>
 	
- <script src="../wp-content/mu-plugins/bp-invitefriends/lib/jquery.js" type="text/javascript"></script>	
+ <script src="<?php echo site_url();?>/wp-content/mu-plugins/bp-invitefriends/lib/jquery.js" type="text/javascript"></script>	
 <script type="text/javascript">
 $(document).ready(function()
 {

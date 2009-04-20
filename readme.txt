@@ -49,6 +49,26 @@ Unzip files on buddypress folder : /wp-content/plugins/buddypress/.
 ####Warning:
 	If use Yahoo API click on "GET AN APP ID" to get an application ID.(SET all fild and select "Browser Based Authentication")
 	If use gMail API set ZEND URL. Ensure that all services are TESTED with "No errors found".	 
+	
+	For Facebook: 
+		Create new Facebook application from [createapp](http://www.facebook.com/developers/createapp.php) as
+		Canvas Callback URL
+			http://rat86.netsons.org/bp/index.php?facebook=true
+		Canvas URL
+			http://apps.facebook.com/buddypress/
+		FBML/iframe
+			FBML
+		Developer Mode
+			Disattivato
+		Application Type
+			Sito Web
+		Private Install
+			No
+		Descrizione dell'applicazione
+			facebook import
+		
+		Copy  API key and secret to admin page, insert url of application(canvas URL), and set redirect URL as home page of blog.
+		
   				
 
 		

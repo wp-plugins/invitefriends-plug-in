@@ -405,10 +405,10 @@ class InstallationChecker {
 				"yahooSECRET"=>str_replace(" ", "", ""),
 				"YahooMod"=>str_replace(" ", "", "API"),
 				"GMailMod"=>str_replace(" ", "", "API"),
-				"ZendUrl"=>str_replace(" ", "", BP_PLUGIN_DIR."/bp-invitefriends/lib/Gmail/library"),	
+				"ZendUrl"=>str_replace(" ", "", WP_PLUGIN_DIR."/bp-invitefriends/lib/Gmail/library"),	
 				"HotmailMod"=>str_replace(" ", "", "cURL"),
 				"aolMod"=>str_replace(" ", "", "API"),	
-				"uploadFile"=>str_replace(" ", "",BP_PLUGIN_DIR),
+				"uploadFile"=>str_replace(" ", "",WP_PLUGIN_DIR),
 				"facebookApiKey"=>str_replace(" ", "", $_POST['facebookApiKey']),
 				"facebookSECRET"=>str_replace(" ", "", $_POST['facebookSECRET']),
 				"facebookAppName"=>str_replace(" ", "", $_POST['facebookAppName']),
@@ -468,12 +468,17 @@ class InstallationChecker {
   <appid>".$_POST['msnAPPID']."</appid>
   <secret>".$_POST['msnSECRET']."</secret>
   <securityalgorithm>wsignin1.0</securityalgorithm>
-  <returnurl>".BP_PLUGIN_DIR."/bp-invitefriends/lib/msnAPI/delauth-handler.php</returnurl>
-  <policyurl>".BP_PLUGIN_DIR."/bp-invitefriends/lib/msnAPI/policy.html</policyurl>
+  <returnurl>".WP_PLUGIN_URL."/bp-invitefriends/lib/msnAPI/delauth-handler.php</returnurl>
+  <policyurl>".WP_PLUGIN_URL."/bp-invitefriends/lib/msnAPI/policy.html</policyurl>
 </windowslivelogin>";
 		echo  "<br />";
-
-		$handle = fopen(BP_PLUGIN_DIR."/bp-invitefriends/lib/msnAPI/DelAuth-Sample1.xml", "w");
+		echo htmlentities($string);
+        echo  "<br />"; 
+		 echo  "<br />"; 
+		echo WP_PLUGIN_URL."/bp-invitefriends/lib/msnAPI/DelAuth-Sample1.xml";
+		 echo  "<br />"; 
+		  echo  "<br />"; 
+		$handle = fopen(WP_PLUGIN_DIR."/bp-invitefriends/lib/msnAPI/DelAuth-Sample1.xml", "w");
 		fwrite ($handle, $string);
 		fclose($handle);
 					
@@ -490,7 +495,12 @@ class InstallationChecker {
 		 echo "<br />BP_PLUGIN_URL:".BP_PLUGIN_URL; 
 		 echo "<br />BP_PLUGIN_DIR:".BP_PLUGIN_DIR;
 		 echo "<br />site_url():".site_url();
-		 echo "<br />WP_CONTENT_DIR():".WP_CONTENT_DIR;
+		 echo "<br />WP_CONTENT_DIR:".WP_CONTENT_DIR;
+		 echo "<br />WP_PLUGIN_URL:".WP_PLUGIN_URL;
+		 echo "<br />WP_PLUGIN_DIR:".WP_PLUGIN_DIR;
+		 echo "<p>";
+		 var_dump($salvati);
+			echo "</p>";
 		?>
 		
 		
@@ -506,8 +516,8 @@ class InstallationChecker {
 				<label for="HotmailMod1">API<input id="HotmailMod1"onclick="methodSelected(this);" type="radio" name="HotmailMod" value="API"   <?php if ($salvati['HotmailMod']=="API") echo "checked"?> > </label>  <br />  
 				<label for="HotmailMod2">Scraper<input id="HotmailMod2"onclick="methodSelected(this);" type="radio" name="HotmailMod" value="cURL"<?php if ($salvati['HotmailMod']!="API") echo "checked"?>> </label>  <br />  <br />    
 				  <a href="http://go.microsoft.com/fwlink/?LinkID=130560" target="_blank">Get your application ID</a>(Sign in by using your Windows Live ID)Live Services: Existing APIs.<br /><br />  
-				<label for="msnAPPID">APPID</label> <input  class="txtMedio" type="text" id="msnAPPID" name="msnAPPID" value="<?php echo $salvati['msnAPPID']; ?>"   <?php if ($salvati['msnMod']!="API") echo "disabled"?> /><br />
-				 <label for="msnSECRET">SECRET</label>   <input class="txtMedio" type="text" id="msnSECRET" name="msnSECRET" value="<?php echo $salvati['msnSECRET']; ?>" <?php if ($salvati['msnMod']!="API") echo "disabled"?> /><br />
+				<label for="msnAPPID">APPID</label> <input  class="txtMedio" type="text" id="msnAPPID" name="msnAPPID" value="<?php echo $salvati['msnAPPID']; ?>"   <?php if ($salvati['HotmailMod']!="API") echo "disabled"?> /><br />
+				 <label for="msnSECRET">SECRET</label>   <input class="txtMedio" type="text" id="msnSECRET" name="msnSECRET" value="<?php echo $salvati['msnSECRET']; ?>" <?php if ($salvati['HotmailMod']!="API") echo "disabled"?> /><br />
 			  </li>
 			</ul>  		
 			<ul id="ulmenu">
@@ -517,6 +527,8 @@ class InstallationChecker {
 				    <label for="YahooMod1">API<input onclick="methodSelected(this);" id="YahooMod1" type="radio" name="YahooMod" value="API" <?php if ($salvati['YahooMod']!="cURL") echo "checked"?> ></label><br />
 					<label for="YahooMod2">Scraper<input onclick="methodSelected(this);" id="YahooMod2"type="radio" name="YahooMod" value="cURL"<?php if ($salvati['YahooMod']=="cURL") echo "checked"?>></label><br /><br />
 					<a href="https://developer.yahoo.com/wsregapp/" target="_blank">Get an App ID</a> <br />
+					<p> Select as Authentication method: Browser Based Authentication. Use this option for browser applications</p>
+					<p> Select as Required access scopes: Yahoo! Address Book with Read Only access</p>
 					<label for="yahooAPPID">APPID</label><input  class="txtMedio" type="text" id="yahooAPPID" name="yahooAPPID" value="<?php echo $salvati['yahooAPPID']; ?>"   <?php if ($salvati['YahooMod']=="cURL") echo "disabled"?> /><br />
 					
 					<label for="yahooAPPID">SECRET</label> <input class="txtMedio" type="text" id="yahooSECRET" name="yahooSECRET" value="<?php echo $salvati['yahooSECRET']; ?>" <?php if ($salvati['YahooMod']=="cURL") echo "disabled"?> /><br />
@@ -535,7 +547,7 @@ class InstallationChecker {
 						echo __("The path to your web accessable folder is: /home/USERID/public_html/. 
 						Where USERID is your account name (usually the first seven characters of your domain name).
 						<br /><b>Suggest: </b>"); 
-						echo BP_PLUGIN_DIR."/bp-invitefriends/lib/Gmail/library";?>
+						echo WP_PLUGIN_DIR."/bp-invitefriends/lib/Gmail/library";?>
 						<input class="txtLungo" type="text" id="ZendUrl" name="ZendUrl" value="<?php echo $salvati['ZendUrl']; ?>" <?php if ($salvati['GMailMod']=="cURL") echo "disabled"?>/><br /><br />
 						<b>Zend Installation Checker</b><br />
 						<?php $installationChecker = new InstallationChecker();   ?>
@@ -732,7 +744,7 @@ position:relative;
 		
 	</script>
 	
- <script src="<?php echo BP_PLUGIN_URL. "/bp-invitefriends/lib/jquery.js";?>" type="text/javascript"></script>	
+ <script src="<?php echo WP_PLUGIN_URL. "/bp-invitefriends/lib/jquery.js";?>" type="text/javascript"></script>	
 <script type="text/javascript">
 $(document).ready(function()
 {

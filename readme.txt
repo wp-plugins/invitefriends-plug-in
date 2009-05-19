@@ -2,9 +2,9 @@
 Author: Giovanni Caputo (email: giovannicaputo86@gmail.com) http://www.giovannicaputo.netsons.org
 Donate link: http://rat86.netsons.org/blog/?page_id=2015
 Tags: invite, buddypress, messenger, yahoo, friends, gMail, API, 
-Requires at least: BuddyPress RC1
-Tested up to: BuddyPress RC1
-Stable tag: 0.6.1
+Requires at least: BuddyPress 1.0
+Tested up to: BuddyPress 1.0
+Stable tag: 0.8.0
 
 
 Invite friends on buddypress social network from MSN, gmail, Yahoo, facebook and twitter. 
@@ -23,8 +23,8 @@ It works under [wordpressMU](http://mu.wordpress.org/) + [BuddyPress](http://www
 0.3 - First release for RC1 version of BuddyPress.   
 0.5 - RC1 release with import rom Facebook and Twitter.  
 0.6 - RC1 Messenger API and new admin page.  
-0.7 - First release for RC2.
-**TRUNCK for BP 1.0**
+0.7 - First release for RC2.  
+0.8 - Release for BuddyPress 1.0
 
 
  
@@ -49,8 +49,9 @@ If you use 0.7.1 version for RC2
 
     * Unzip files in /wp-content/plugins/buddypress/.
 
-Trunck version for BP 1.0
+0.8 Cersion for BP 1.0
 	* * Unzip files in /wp-content/plugins/.
+	Active plugin from plugin page.
 
 ####From admin page: 
 	Setting/Invite Friends

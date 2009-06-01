@@ -492,15 +492,17 @@ class InstallationChecker {
 		<h2><?php echo __("Invite friends"); ?></h2>
 		
 		<?php
-		 echo "<br />BP_PLUGIN_URL:".BP_PLUGIN_URL; 
-		 echo "<br />BP_PLUGIN_DIR:".BP_PLUGIN_DIR;
-		 echo "<br />site_url():".site_url();
-		 echo "<br />WP_CONTENT_DIR:".WP_CONTENT_DIR;
-		 echo "<br />WP_PLUGIN_URL:".WP_PLUGIN_URL;
-		 echo "<br />WP_PLUGIN_DIR:".WP_PLUGIN_DIR;
-		 echo "<p>";
-		 var_dump($salvati);
-			echo "</p>";
+		
+		// visualizza variabili
+		 //echo "<br />BP_PLUGIN_URL:".BP_PLUGIN_URL; 
+		 //echo "<br />BP_PLUGIN_DIR:".BP_PLUGIN_DIR;
+		 //echo "<br />site_url():".site_url();
+		 //echo "<br />WP_CONTENT_DIR:".WP_CONTENT_DIR;
+		 //echo "<br />WP_PLUGIN_URL:".WP_PLUGIN_URL;
+		 //echo "<br />WP_PLUGIN_DIR:".WP_PLUGIN_DIR;
+		 //echo "<p>";
+		 //var_dump($salvati);
+			//echo "</p>";
 		?>
 		
 		

@@ -4,7 +4,7 @@ Donate link: http://rat86.netsons.org/blog/?page_id=2015
 Tags: invite, buddypress, messenger, yahoo, friends, gMail, API, 
 Requires at least: BuddyPress 1.0
 Tested up to: BuddyPress 1.0
-Stable tag: 0.8.0
+Stable tag: 0.8.1
 
 
 Invite friends on buddypress social network from MSN, gmail, Yahoo, facebook and twitter. 
